@@ -3,6 +3,8 @@ Package sc;
 Helpers
 
 lettre = [['a' .. 'z'] + ['A' .. 'Z']];
+alpha = [lettre + ['_' + '$']];
+alphanum = [lettre + chiffre];
 
 Tokens
 
@@ -29,6 +31,11 @@ alors = 'alors';
 tq = 'tant que';
 sinon = 'sinon';
 ecrire = 'ecrire';
+l_tab = '[';
+r_tab = ']';
+l_hug = '{';
+r_hug = '}';
+ID = alpha alphanum*;
 
 Ignored Tokens
 
@@ -41,11 +48,30 @@ Productions
 eps =;
 prog = listDecVarOpt listDecFct;
 listDecFct = {decFctlistDecFct} decFct listDecFct | {epsilon} eps;
-decFct = ID (listDecVar) listDecVarOpt instBloc;
+decFct = ID l_par listDecVar r_par listDecVarOpt instBloc;
 listDecVarOpt = {listDecVar;} listDecVar ';' |{epsilon} eps;
 listDecVar = {decVarlistDecVarBis} decVar listDecVarBis | {epsilon} eps;
 listDecVarBis = {,decVarlistDecVarBis} ',' decVar listDecVarBis | {epsilon} eps;
-inst ={instAff} instAff |{instSi} instSi | {instTantQ} instTantQ | {instAppel} instAppel |{instRet} instRet | {instEcrire} instEcrire; // | {instBloc} instBloc
-instAff = var equal exp;
-instSi =
+inst ={instAff} instAff |{instSi} instSi | {instTantQ} instTantQ | {instAppel} instApp |{instRet} instRet | {instEcrire} instEcrire; // | {instBloc} instBloc
+instAff = var equal exp semico;
+instSi = {siAlors} si exp alors instBloc |{siAlorsSinon} si exp alors instBloc sinon instBloc;
+instTantQ = tq exp faire instBloc;
+instBloc = l_hug listInst r_hug;
+listInst = {instlistInst} inst listInst | {epsilon} eps;
+instApp = app semico;
+app = ID l_par listExp r_par;
+instEcrire = ecrire l_par exp r_par semico;
+exp = {expOrE1} exp or e1 | {e1} e1;
+e1 = {E1OrE2} e1 or e2 | {e2} e2;
+e2 = {E2EqualE3} e2 equal e3 | {E2infE3} e2 inf e3 | {E3} e3;
+e3 = {E3PlusE4} e3 plus e4 | {E3MinusE4} e3 minus e4 | {E4} e4;
+e4 = {E4multE5} e4 mult e5 | {E4divE5} e4 div e5 | {E5} e5;
+e5 = {neg} neg e5 | {e6} e6;
+e6 = {exp} l_par exp r_par | {nmbr} number | {app} app | {var} var | {lire} lire;
+var = {id} ID | {idTab} ID l_tab exp r_tab;
+decVar = {entierId} entier ID | {entierIdTab} entier ID l_tab number r_tab;
+
+
+
+
 

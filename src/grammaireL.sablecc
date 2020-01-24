@@ -8,6 +8,22 @@ Tokens
 
 espaces = (' ' | 13 | 10)+;
 commentaire= '#' [[0 .. 0xffff] - [10 + 13]]* (10 | 13 | 10 13);
+number = ['0'..'9']+;
+plus ='+';
+minus ='-';
+mult ='*';
+div ='/';
+l_par ='(';
+r_par =')';
+inf = '<';
+equal = '=';
+and = '&';
+or = '|';
+neg = '!';
+coma = ',';
+semico = ';';
+entier = 'entier';
+
 
 Ignored Tokens
 
@@ -15,7 +31,15 @@ espaces, commentaire;
 
 Productions
 
-programme = optdecvar listedecfonc ;
+//programme = optdecvar listedecfonc ;
 
-test
+eps =;
+prog = listDecVarOpt listDecFct;
+listDecFct = decFct listDecFct | eps;
+decFct = ID (listDecVar) listDecVarOpt instBloc;
+listDecVarOpt = listDecVar ';' | eps;
+listDecVar = decVar listDecVarBis | eps;
+listDecVarBis = ',' decVar listDecVarBis | eps;
+inst = instAff | instSi | instTantQ | instAppel | instRet // | instBloc
+
 

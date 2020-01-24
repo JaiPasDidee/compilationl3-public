@@ -23,7 +23,12 @@ neg = '!';
 coma = ',';
 semico = ';';
 entier = 'entier';
-
+lire = 'lire';
+si = 'si';
+alors = 'alors';
+tq = 'tant que';
+sinon = 'sinon';
+ecrire = 'ecrire';
 
 Ignored Tokens
 
@@ -35,11 +40,12 @@ Productions
 
 eps =;
 prog = listDecVarOpt listDecFct;
-listDecFct = decFct listDecFct | eps;
+listDecFct = {decFctlistDecFct} decFct listDecFct | {epsilon} eps;
 decFct = ID (listDecVar) listDecVarOpt instBloc;
-listDecVarOpt = listDecVar ';' | eps;
-listDecVar = decVar listDecVarBis | eps;
-listDecVarBis = ',' decVar listDecVarBis | eps;
-inst = instAff | instSi | instTantQ | instAppel | instRet // | instBloc
-
+listDecVarOpt = {listDecVar;} listDecVar ';' |{epsilon} eps;
+listDecVar = {decVarlistDecVarBis} decVar listDecVarBis | {epsilon} eps;
+listDecVarBis = {,decVarlistDecVarBis} ',' decVar listDecVarBis | {epsilon} eps;
+inst ={instAff} instAff |{instSi} instSi | {instTantQ} instTantQ | {instAppel} instAppel |{instRet} instRet | {instEcrire} instEcrire; // | {instBloc} instBloc
+instAff = var equal exp;
+instSi =
 

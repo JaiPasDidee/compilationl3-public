@@ -4,7 +4,7 @@ Helpers
 
 lettre = [['a' .. 'z'] + ['A' .. 'Z']];
 alpha = [lettre + ['_' + '$']];
-chiffre = ['O' .. '9'];
+chiffre = ['0' .. '9'];
 alphanum = [lettre + chiffre];
 
 Tokens

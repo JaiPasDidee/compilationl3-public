@@ -219,7 +219,13 @@ public class Sc2sa extends DepthFirstAdapter {
 
     @Override
     public void caseAOuExp(AOuExp node) {
-        super.caseAOuExp(node);
+        SaExp op1 = null;
+        SaExp op2 = null;
+        node.getExp().apply(this);
+        op1 = (SaExp) this.returnValue;
+        node.getExp1().apply((this));
+        op2 = (SaExp) this.returnValue;
+        this.returnValue = new SaExpOr(op1,op2);
     }
 
     @Override

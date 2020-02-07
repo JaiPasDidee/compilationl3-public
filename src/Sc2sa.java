@@ -38,11 +38,6 @@ public class Sc2sa extends DepthFirstAdapter {
     }
 
     @Override
-    public void caseStart(Start node) {
-        super.caseStart(node);
-    }
-
-    @Override
     public void caseADecvarldecfoncProgramme(ADecvarldecfoncProgramme node) {
         super.caseADecvarldecfoncProgramme(node);
     }
@@ -164,7 +159,10 @@ public class Sc2sa extends DepthFirstAdapter {
 
     @Override
     public void caseAInstrbloc(AInstrbloc node) {
-        super.caseAInstrbloc(node);
+        SaLInst op1 = null;
+        node.getListeinst().apply(this);
+        op1 = (SaLInst) this.returnValue;
+        this.returnValue = new SaInstBloc(op1);
     }
 
     @Override
@@ -194,7 +192,13 @@ public class Sc2sa extends DepthFirstAdapter {
 
     @Override
     public void caseAInstrtantque(AInstrtantque node) {
-        super.caseAInstrtantque(node);
+        SaExp op1 = null;
+        SaInst op2 = null;
+        node.getExp().apply(this);
+        op1 = (SaExp) this.returnValue;
+        node.getInstrbloc().apply(this);
+        op2 = (SaInst) this.returnValue;
+        this.returnValue = new SaInstTantQue(op1, op2);
     }
 
     @Override

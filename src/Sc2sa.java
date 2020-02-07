@@ -54,17 +54,17 @@ public class Sc2sa extends DepthFirstAdapter {
         SaLDec op1 = null;
         node.getListedecfonc().apply(this);
         op1 = (SaLDec) this.returnValue;
-        this.returnValue = new SaProg(op1);
+        this.returnValue = new SaLDec(null,op1);
         //TODO a refaire jure ???
     }
 
     @Override
     public void caseAOptdecvar(AOptdecvar node) {
-        SaLDec op1 = null;
+        SaDecVar op1 = null;
         SaInst op2 = null;
         node.getListedecvar().apply(this);
-        op1 = (SaLDec) this.returnValue;
-        this.returnValue = new Sa;
+        op1 = (SaDecVar) this.returnValue;
+        this.returnValue = new SaDecVar(op1.getNom());
     }
 
     @Override

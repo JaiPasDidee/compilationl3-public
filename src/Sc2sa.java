@@ -124,7 +124,12 @@ public class Sc2sa extends DepthFirstAdapter {
 
     @Override
     public void caseAInstrsiInstr(AInstrsiInstr node) {
-        super.caseAInstrsiInstr(node);
+        SaExp op1 = null;
+        SaInst op2 = null;
+        SaInst op3 = null;
+        node.().apply(this);
+        op1 = (SaInst) this.returnValue;
+        this.returnValue = new Sa;
     }
 
     @Override
@@ -233,11 +238,6 @@ public class Sc2sa extends DepthFirstAdapter {
     }
 
     @Override
-    public void caseAExp1Exp(AExp1Exp node) {
-        super.caseAExp1Exp(node);
-    }
-
-    @Override
     public void caseAEtExp1(AEtExp1 node) {
         SaExp op1 = null;
         SaExp op2 = null;
@@ -245,21 +245,19 @@ public class Sc2sa extends DepthFirstAdapter {
         op1 = (SaExp) this.returnValue;
         node.getExp2().apply((this));
         op2 = (SaExp) this.returnValue;
-        this.returnValue = new SaExpAnd(op1,op2);    }
-
-    @Override
-    public void caseAExp2Exp1(AExp2Exp1 node) {
-        super.caseAExp2Exp1(node);
+        this.returnValue = new SaExpAnd(op1,op2);
     }
+
 
     @Override
     public void caseAInfExp2(AInfExp2 node) {
-        super.caseAInfExp2(node);
-    }
-
-    @Override
-    public void caseAExp3Exp2(AExp3Exp2 node) {
-        super.caseAExp3Exp2(node);
+        SaExp op1 = null;
+        SaExp op2 = null;
+        node.getExp2().apply(this);
+        op1 = (SaExp) this.returnValue;
+        node.getExp3().apply((this));
+        op2 = (SaExp) this.returnValue;
+        this.returnValue = new SaExpInf(op1,op2);
     }
 
     @Override
@@ -271,11 +269,6 @@ public class Sc2sa extends DepthFirstAdapter {
         node.getExp4().apply((this));
         op2 = (SaExp) this.returnValue;
         this.returnValue = new SaExpSub(op1,op2);
-    }
-
-    @Override
-    public void caseAExp4Exp3(AExp4Exp3 node) {
-        super.caseAExp4Exp3(node);
     }
 
     @Override
@@ -301,22 +294,12 @@ public class Sc2sa extends DepthFirstAdapter {
     }
 
     @Override
-    public void caseAExp5Exp4(AExp5Exp4 node) {
-        super.caseAExp5Exp4(node);
-    }
-
-    @Override
     public void caseANonExp5(ANonExp5 node) {
         SaExp op1 = null;
         SaExp op2 = null;
         node.getExp5().apply(this);
         op1 = (SaExp) this.returnValue;
         this.returnValue = new SaExpNot(op1);
-    }
-
-    @Override
-    public void caseAExp6Exp5(AExp6Exp5 node) {
-        super.caseAExp6Exp5(node);
     }
 
     @Override

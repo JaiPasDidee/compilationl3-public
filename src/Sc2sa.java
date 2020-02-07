@@ -12,7 +12,8 @@ public class Sc2sa extends DepthFirstAdapter {
 
     @Override
     public void caseAAppelfctExp6(AAppelfctExp6 node) {
-
+        //TODO supp ?
+        super.caseAAppelfctExp6(node);
     }
 
     @Override
@@ -39,32 +40,61 @@ public class Sc2sa extends DepthFirstAdapter {
 
     @Override
     public void caseADecvarldecfoncProgramme(ADecvarldecfoncProgramme node) {
-        super.caseADecvarldecfoncProgramme(node);
+        SaLDec op1 = null;
+        SaLDec op2 = null;
+        node.getOptdecvar().apply(this);
+        op1 = (SaLDec) this.returnValue;
+        node.getListedecfonc().apply(this);
+        op2 = (SaLDec) this.returnValue;
+        this.returnValue = new SaProg(op1, op2);
     }
 
     @Override
     public void caseALdecfoncProgramme(ALdecfoncProgramme node) {
-        super.caseALdecfoncProgramme(node);
+        SaLDec op1 = null;
+        node.getListedecfonc().apply(this);
+        op1 = (SaLDec) this.returnValue;
+        this.returnValue = new SaProg(op1);
+        //TODO a refaire jure ???
     }
 
     @Override
     public void caseAOptdecvar(AOptdecvar node) {
-        super.caseAOptdecvar(node);
+        SaLDec op1 = null;
+        SaInst op2 = null;
+        node.getListedecvar().apply(this);
+        op1 = (SaLDec) this.returnValue;
+        this.returnValue = new Sa;
     }
 
     @Override
     public void caseADecvarldecvarListedecvar(ADecvarldecvarListedecvar node) {
-        super.caseADecvarldecvarListedecvar(node);
+        SaDec op1 = null;
+        SaLDec op2 = null;
+        node.getDecvar().apply(this);
+        op1 = (SaDec) this.returnValue;
+        node.getListedecvarbis().apply(this);
+        op2 = (SaLDec) this.returnValue;
+        this.returnValue = new SaLDec(op1, op2);
     }
 
     @Override
     public void caseADecvarListedecvar(ADecvarListedecvar node) {
-        super.caseADecvarListedecvar(node);
+        SaDecVar op1 = null;
+        node.getDecvar().apply(this);
+        op1 = (SaDecVar) this.returnValue;
+        this.returnValue = new SaLDec(op1, null);
     }
 
     @Override
     public void caseADecvarldecvarListedecvarbis(ADecvarldecvarListedecvarbis node) {
-        super.caseADecvarldecvarListedecvarbis(node);
+        SaDec op1 = null;
+        SaDecVar op2 = null;
+        node.getDecvar().apply(this);
+        op1 = (SaExp) this.returnValue;
+        node.getListedecvarbis().apply(this);
+        op2 = (SaInst) this.returnValue;
+        this.returnValue = new SaInstTantQue(op1, op2);
     }
 
     @Override
@@ -329,7 +359,7 @@ public class Sc2sa extends DepthFirstAdapter {
 
     @Override
     public void caseALireExp6(ALireExp6 node) {
-        this.returnValue = new SaExpLire();
+        super.caseALireExp6(node);
     }
 
     @Override

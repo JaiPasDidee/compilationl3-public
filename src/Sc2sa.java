@@ -127,9 +127,11 @@ public class Sc2sa extends DepthFirstAdapter {
         SaExp op1 = null;
         SaInst op2 = null;
         SaInst op3 = null;
-        node.().apply(this);
-        op1 = (SaInst) this.returnValue;
-        this.returnValue = new Sa;
+        node.getInstrsi().apply(this);
+        op1 = (SaExp) this.returnValue;
+        node.getInstrbloc().apply(this);
+        op2 = (SaInst) this.returnValue;
+        this.returnValue = new SaInstTantQue(op1, op2);
     }
 
     @Override
@@ -213,12 +215,17 @@ public class Sc2sa extends DepthFirstAdapter {
 
     @Override
     public void caseAInstrretour(AInstrretour node) {
-        super.caseAInstrretour(node);
-    }
+        SaExp op1 = null;
+        node.getExp().apply(this);
+        op1 = (SaExp) this.returnValue;
+        this.returnValue = new SaInstRetour(op1);    }
 
     @Override
     public void caseAInstrecriture(AInstrecriture node) {
-        super.caseAInstrecriture(node);
+        SaExp op1 = null;
+        node.getExp().apply(this);
+        op1 = (SaExp) this.returnValue;
+        this.returnValue = new SaInstEcriture(op1);
     }
 
     @Override
@@ -309,7 +316,10 @@ public class Sc2sa extends DepthFirstAdapter {
 
     @Override
     public void caseAVarExp6(AVarExp6 node) {
-        super.caseAVarExp6(node);
+        SaVar op1 = null;
+        node.getVar().apply(this);
+        op1 = (SaVar) this.returnValue;
+        this.returnValue = new SaExpVar(op1);
     }
 
     @Override
@@ -319,7 +329,7 @@ public class Sc2sa extends DepthFirstAdapter {
 
     @Override
     public void caseALireExp6(ALireExp6 node) {
-        super.caseALireExp6(node);
+        this.returnValue = new SaExpLire();
     }
 
     @Override

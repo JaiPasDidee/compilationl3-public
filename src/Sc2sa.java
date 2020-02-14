@@ -137,11 +137,6 @@ public class Sc2sa extends DepthFirstAdapter {
     }
 
     @Override
-    public void caseASansparamListeparam(ASansparamListeparam node) {
-
-    }
-
-    @Override
     public void caseAAvecparamListeparam(AAvecparamListeparam node) {
         node.getListedecvar().apply(this);
         SaLDec op1 = (SaLDec) this.returnValue;
@@ -164,27 +159,24 @@ public class Sc2sa extends DepthFirstAdapter {
 
     @Override
     public void caseALinstrecListeinst(ALinstrecListeinst node) {
-        super.caseALinstrecListeinst(node);
-    }
-
-    @Override
-    public void caseALinstfinalListeinst(ALinstfinalListeinst node) {
-        super.caseALinstfinalListeinst(node);
+        SaInst op1 = retrieveNode(node.getInstr());
+        SaLInst op2 = retrieveNode(node.getListeinst());
+        this.returnValue = new SaLInst(op1,op2);
     }
 
     @Override
     public void caseAAvecsinonInstrsi(AAvecsinonInstrsi node) {
-        super.caseAAvecsinonInstrsi(node);
+        SaExp op1 = retrieveNode(node.getExp());
+        SaInstBloc op2 = retrieveNode(node.getInstrbloc());
+        SaInst op3 = retrieveNode(node.getInstrsinon());
+        this.returnValue = new SaInstSi(op1,op2, op3);
     }
 
     @Override
     public void caseASanssinonInstrsi(ASanssinonInstrsi node) {
-        super.caseASanssinonInstrsi(node);
-    }
-
-    @Override
-    public void caseAInstrsinon(AInstrsinon node) {
-        super.caseAInstrsinon(node);
+        SaExp op1 = retrieveNode(node.getExp());
+        SaInstBloc op2 = retrieveNode(node.getInstrbloc());
+        this.returnValue = new SaInstSi(op1,op2, null);
     }
 
     @Override
@@ -196,11 +188,6 @@ public class Sc2sa extends DepthFirstAdapter {
         node.getInstrbloc().apply(this);
         op2 = (SaInst) this.returnValue;
         this.returnValue = new SaInstTantQue(op1, op2);
-    }
-
-    @Override
-    public void caseAInstrappel(AInstrappel node) {
-        super.caseAInstrappel(node);
     }
 
     @Override
@@ -216,11 +203,6 @@ public class Sc2sa extends DepthFirstAdapter {
         node.getExp().apply(this);
         op1 = (SaExp) this.returnValue;
         this.returnValue = new SaInstEcriture(op1);
-    }
-
-    @Override
-    public void caseAInstrvide(AInstrvide node) {
-        super.caseAInstrvide(node);
     }
 
     @Override
@@ -301,7 +283,7 @@ public class Sc2sa extends DepthFirstAdapter {
 
     @Override
     public void caseANombreExp6(ANombreExp6 node) {
-        super.caseANombreExp6(node);
+        this.returnValue = new SaExpInt(Integer.parseInt(node.getNombre().getText()));
     }
 
     @Override
@@ -313,52 +295,57 @@ public class Sc2sa extends DepthFirstAdapter {
     }
 
     @Override
-    public void caseAParenthesesExp6(AParenthesesExp6 node) {
-        super.caseAParenthesesExp6(node);
-    }
-
-    @Override
     public void caseALireExp6(ALireExp6 node) {
-        super.caseALireExp6(node);
+        this.returnValue = new SaExpLire();
     }
 
     @Override
     public void caseAVartabVar(AVartabVar node) {
-        super.caseAVartabVar(node);
+        SaExp op1 = retrieveNode(node.getExp());
+        this.returnValue = new SaVarIndicee(node.getIdentif().getText(), op1);
     }
 
     @Override
     public void caseAVarsimpleVar(AVarsimpleVar node) {
-        super.caseAVarsimpleVar(node);
+        this.returnValue = new SaVarSimple(node.getIdentif().getText());
     }
 
     @Override
     public void caseARecursifListeexp(ARecursifListeexp node) {
-        super.caseARecursifListeexp(node);
+        SaExp op1 = retrieveNode(node.getExp());
+        SaLExp op2 = retrieveNode(node.getListeexpbis());
+        this.returnValue = new SaLExp(op1,op2);
     }
 
     @Override
     public void caseAFinalListeexp(AFinalListeexp node) {
-        super.caseAFinalListeexp(node);
-    }
+        SaExp op1 = retrieveNode(node.getExp());
+        this.returnValue = new SaLExp(op1, null);
+;    }
 
     @Override
     public void caseAFinalListeexpbis(AFinalListeexpbis node) {
-        super.caseAFinalListeexpbis(node);
+        SaExp op1 = retrieveNode(node.getExp());
+        this.returnValue = new SaLExp(op1, null);
     }
 
     @Override
     public void caseARecursifListeexpbis(ARecursifListeexpbis node) {
-        super.caseARecursifListeexpbis(node);
+        SaExp op1 = retrieveNode(node.getExp());
+        SaLExp op2 = retrieveNode(node.getListeexpbis());
+        this.returnValue = new SaLExp(op1,op2);
     }
 
     @Override
     public void caseAAvecparamAppelfct(AAvecparamAppelfct node) {
-        super.caseAAvecparamAppelfct(node);
+        String nom = node.getIdentif().getText();
+        SaLExp op1 = retrieveNode(node.getListeexp());
+        this.returnValue = new SaAppel(nom, op1);
     }
 
     @Override
     public void caseASansparamAppelfct(ASansparamAppelfct node) {
-        super.caseASansparamAppelfct(node);
+        String nom = node.getIdentif().getText();
+        this.returnValue = new SaAppel(nom, null);
     }
 }

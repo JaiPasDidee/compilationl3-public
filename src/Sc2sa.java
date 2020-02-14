@@ -10,20 +10,17 @@ public class Sc2sa extends DepthFirstAdapter {
         return returnValue;
     }
 
-    @Override
-    public void caseAAppelfctExp6(AAppelfctExp6 node) {
-        //TODO supp ?
-        super.caseAAppelfctExp6(node);
+    private <T> T retrieveNode(Node node) {
+        if(node == null)
+            return null;
+        node.apply(this);
+        return (T)returnValue;
     }
 
     @Override
     public void caseAEgalExp2(AEgalExp2 node) {
-        SaExp op1 = null;
-        SaExp op2 = null;
-        node.getExp2().apply(this);
-        op1 = (SaExp) this.returnValue;
-        node.getExp3().apply((this));
-        op2 = (SaExp) this.returnValue;
+        SaExp op1 = retrieveNode(node.getExp2());
+        SaExp op2 = retrieveNode(node.getExp3());
         this.returnValue = new SaExpEqual(op1,op2);
     }
 
@@ -47,15 +44,6 @@ public class Sc2sa extends DepthFirstAdapter {
         node.getListedecfonc().apply(this);
         op2 = (SaLDec) this.returnValue;
         this.returnValue = new SaProg(op1, op2);
-    }
-
-    @Override
-    public void caseALdecfoncProgramme(ALdecfoncProgramme node) {
-        SaLDec op1 = null;
-        node.getListedecfonc().apply(this);
-        op1 = (SaLDec) this.returnValue;
-        this.returnValue = new SaLDec(null,op1);
-        //TODO a refaire jure ???
     }
 
     @Override
@@ -115,89 +103,55 @@ public class Sc2sa extends DepthFirstAdapter {
 
     @Override
     public void caseADecvartableauDecvar(ADecvartableauDecvar node) {
-        super.caseADecvartableauDecvar(node);
+        returnValue = new SaDecTab(node.getIdentif().getText(), Integer.parseInt(node.getNombre().getText()));
     }
 
     @Override
     public void caseALdecfoncrecListedecfonc(ALdecfoncrecListedecfonc node) {
         super.caseALdecfoncrecListedecfonc(node);
-    }
-
-    @Override
-    public void caseALdecfoncfinalListedecfonc(ALdecfoncfinalListedecfonc node) {
-        super.caseALdecfoncfinalListedecfonc(node);
+        SaDecFonc op1 = null;
+        SaLDec op2 = null;
+        node.getDecfonc().apply(this);
+        op1 = (SaDecFonc) this.returnValue;
+        node.getListedecfonc().apply(this);
+        op2 = (SaLDec) this.returnValue;
+        this.returnValue = new SaLDec(op1, op2);
     }
 
     @Override
     public void caseADecvarinstrDecfonc(ADecvarinstrDecfonc node) {
         super.caseADecvarinstrDecfonc(node);
+        String op1 = node.getIdentif().getText();
+        SaInst op4 = retrieveNode(node.getInstrbloc());
+        SaLDec op3 =  retrieveNode(node.getListeparam());
+        SaLDec op2 = retrieveNode(node.getOptdecvar());
+        this.returnValue = new SaDecFonc(op1,op2,op3,op4);
     }
 
     @Override
     public void caseAInstrDecfonc(AInstrDecfonc node) {
-        super.caseAInstrDecfonc(node);
+        String op1 = node.getIdentif().getText();
+        SaLDec op2 = retrieveNode(node.getListeparam());
+        SaInst op3 = retrieveNode(node.getInstrbloc());
+        this.returnValue = new SaDecFonc(op1,null, op2, op3);
     }
 
     @Override
     public void caseASansparamListeparam(ASansparamListeparam node) {
-        super.caseASansparamListeparam(node);
+
     }
 
     @Override
     public void caseAAvecparamListeparam(AAvecparamListeparam node) {
-        super.caseAAvecparamListeparam(node);
-    }
+        node.getListedecvar().apply(this);
+        SaLDec op1 = (SaLDec) this.returnValue;
+        this.returnValue = new SaLDec(op1.getTete(), op1.getQueue());
 
-    @Override
-    public void caseAInstraffectInstr(AInstraffectInstr node) {
-        super.caseAInstraffectInstr(node);
-    }
-
-    @Override
-    public void caseAInstrblocInstr(AInstrblocInstr node) {
-        super.caseAInstrblocInstr(node);
-    }
-
-    @Override
-    public void caseAInstrsiInstr(AInstrsiInstr node) {
-        SaExp op1 = null;
-        SaInst op2 = null;
-        SaInst op3 = null;
-        node.getInstrsi().apply(this);
-        op1 = (SaExp) this.returnValue;
-        node.getInstrsi().apply(this);
-        op2 = (SaInst) this.returnValue;
-        this.returnValue = new SaInstTantQue(op1, op2);
-    }
-
-    @Override
-    public void caseAInstrtantqueInstr(AInstrtantqueInstr node) {
-        super.caseAInstrtantqueInstr(node);
-    }
-
-    @Override
-    public void caseAInstrappelInstr(AInstrappelInstr node) {
-        super.caseAInstrappelInstr(node);
-    }
-
-    @Override
-    public void caseAInstrretourInstr(AInstrretourInstr node) {
-        super.caseAInstrretourInstr(node);
-    }
-
-    @Override
-    public void caseAInstrecritureInstr(AInstrecritureInstr node) {
-        super.caseAInstrecritureInstr(node);
-    }
-
-    @Override
-    public void caseAInstrvideInstr(AInstrvideInstr node) {
-        super.caseAInstrvideInstr(node);
     }
 
     @Override
     public void caseAInstraffect(AInstraffect node) {
-        super.caseAInstraffect(node);
+        this.returnValue = new SaInstAffect(retrieveNode(node.getVar()), retrieveNode(node.getExp()));
     }
 
     @Override

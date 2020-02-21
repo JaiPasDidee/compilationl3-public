@@ -67,6 +67,8 @@ public class Sa2ts extends SaDepthFirstVisitor <Void>{
     @Override
     public Void visit(SaAppel node) {
         if(!tableGlobale.fonctions.containsKey(node.getNom())) throw new RuntimeException("La fonction " + node.getNom() + " n'a pas été déclarée.");
+        if(tableGlobale.fonctions.get(node.getNom()).nbArgs != node.getArguments().length()) throw new RuntimeException("Le nombre d'argument de la fonction "+ node.getNom() + " est invalide.");
+        if (!tableGlobale.fonctions.containsKey("main")) throw new RuntimeException("Pas de fonction main");
         return super.visit(node);
     }
 }

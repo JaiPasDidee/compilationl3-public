@@ -18,7 +18,7 @@ public class Sa2ts extends SaDepthFirstVisitor <Void>{
 
     @Override
     public Void visit(SaVarSimple node) {
-        if(!tableLocale.variables.containsKey(node.getNom())) {
+        if(!tableLocale.variables.containsKey(node.getNom()) && tableLocale != null) {
             if (!tableGlobale.variables.containsKey(node.getNom())) {
                 throw new RuntimeException("Variable " + node.getNom() + " non déclarée");
             }
@@ -33,16 +33,33 @@ public class Sa2ts extends SaDepthFirstVisitor <Void>{
 
     @Override
     public Void visit(SaDecTab node) {
+        String identif = node.getNom()
+        if(tableLocale != null){
+
+        }
+
         return super.visit(node);
     }
 
     @Override
     public Void visit(SaDecFonc node) {
-        node.
+        String identif = node.getNom();
+        tableLocale = new Ts();
+        if(tableGlobale.fonctions.containsKey(identif)){
+            throw new RuntimeException("Fonction " + identif + " déjà déclarée");
+        }
+        tableGlobale.addFct(identif, node.getParametres().length(), new Ts(), node);
+        tableLocale = null;
+        return  super.visit(node);
     }
+
+
 
     @Override
     public Void visit(SaDecVar node) {
+        Ts porte = node.tsItem.portee;
+        if(porte.variables.containsKey(node.getNom()) || (tableLocale.fonctions.containsKey(node.getNom()))) throw new RuntimeException("Variable " + node.getNom() + " déjà déclarée");
+        porte.addVar(node.getNom(), 1);
         return super.visit(node);
     }
 

@@ -49,15 +49,6 @@ public class Sc2sa extends DepthFirstAdapter {
     }
 
     @Override
-    public void caseAOptdecvar(AOptdecvar node) {
-        SaDecVar op1 = null;
-        SaInst op2 = null;
-        node.getListedecvar().apply(this);
-        op1 = (SaDecVar) this.returnValue;
-        this.returnValue = new SaDecVar(op1.getNom());
-    }
-
-    @Override
     public void caseADecvarldecvarListedecvar(ADecvarldecvarListedecvar node) {
         SaDec op1 = null;
         SaLDec op2 = null;
@@ -70,18 +61,18 @@ public class Sc2sa extends DepthFirstAdapter {
 
     @Override
     public void caseADecvarListedecvar(ADecvarListedecvar node) {
-        SaDecVar op1 = null;
+        SaDec op1 = null;
         node.getDecvar().apply(this);
-        op1 = (SaDecVar) this.returnValue;
+        op1 = (SaDec) this.returnValue;
         this.returnValue = new SaLDec(op1, null);
     }
 
     @Override
     public void caseADecvarldecvarListedecvarbis(ADecvarldecvarListedecvarbis node) {
-        SaDecVar op1 = null;
+        SaDec op1 = null;
         SaLDec op2 = null;
         node.getDecvar().apply(this);
-        op1 = (SaDecVar) this.returnValue;
+        op1 = (SaDec) this.returnValue;
         node.getListedecvarbis().apply(this);
         op2 = (SaLDec) this.returnValue;
         this.returnValue = new SaLDec(op1, op2);
@@ -89,9 +80,9 @@ public class Sc2sa extends DepthFirstAdapter {
 
     @Override
     public void caseADecvarListedecvarbis(ADecvarListedecvarbis node) {
-        SaDecVar op1 = null;
+        SaDec op1 = null;
         node.getDecvar().apply(this);
-        op1 = (SaDecVar) this.returnValue;
+        op1 = (SaDec) this.returnValue;
         this.returnValue = new SaLDec(op1, null);
     }
 
@@ -160,8 +151,15 @@ public class Sc2sa extends DepthFirstAdapter {
         this.returnValue = new SaInstBloc(op1);
     }
 
+    @Override
+    public void caseALdecfoncfinalListedecfonc(ALdecfoncfinalListedecfonc node) {
+        this.returnValue = null;
+    }
 
-
+    @Override
+    public void caseALinstfinalListeinst(ALinstfinalListeinst node) {
+        this.returnValue = null;
+    }
 
     @Override
     public void caseALinstrecListeinst(ALinstrecListeinst node) {
@@ -350,8 +348,19 @@ public class Sc2sa extends DepthFirstAdapter {
     }
 
     @Override
+    public void caseAAppelfctExp6(AAppelfctExp6 node) {
+        SaAppel op1 = retrieveNode(node.getAppelfct());
+        this.returnValue = new SaExpAppel(op1);
+    }
+
+    @Override
     public void caseASansparamAppelfct(ASansparamAppelfct node) {
         String nom = node.getIdentif().getText();
         this.returnValue = new SaAppel(nom, null);
+    }
+
+    @Override
+    public void caseASansparamListeparam(ASansparamListeparam node) {
+        this.returnValue = null;
     }
 }

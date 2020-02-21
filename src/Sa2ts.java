@@ -28,7 +28,7 @@ public class Sa2ts extends SaDepthFirstVisitor <Void>{
 
     @Override
     public Void visit(SaVarIndicee node) {
-        if(!tableGlobale.fonctions.containsKey(node.getNom())) throw new RuntimeException("La variable " + node.getNom() + " n'a pas été définie");
+        if(!tableGlobale.variables.containsKey(node.getNom())) throw new RuntimeException("La variable " + node.getNom() + " n'a pas été définie");
         return super.visit(node);
     }
 
@@ -38,7 +38,7 @@ public class Sa2ts extends SaDepthFirstVisitor <Void>{
         if(tableLocale != null){
 
         }
-
+        tableGlobale.addVar(node.getNom(),node.getTaille());
         return super.visit(node);
     }
 
@@ -49,7 +49,10 @@ public class Sa2ts extends SaDepthFirstVisitor <Void>{
         if(tableGlobale.fonctions.containsKey(identif)){
             throw new RuntimeException("Fonction " + identif + " déjà déclarée");
         }
-        tableGlobale.addFct(identif, node.getParametres().length(), new Ts(), node);
+        int arg ;
+        if(node.getParametres() == null) arg = 0;
+        else arg = node.getParametres().length();
+        tableGlobale.addFct(identif,arg , new Ts(), node);
         tableLocale = null;
         return  super.visit(node);
     }
@@ -70,5 +73,9 @@ public class Sa2ts extends SaDepthFirstVisitor <Void>{
         if(tableGlobale.fonctions.get(node.getNom()).nbArgs != node.getArguments().length()) throw new RuntimeException("Le nombre d'argument de la fonction "+ node.getNom() + " est invalide.");
         if (!tableGlobale.fonctions.containsKey("main")) throw new RuntimeException("Pas de fonction main");
         return super.visit(node);
+    }
+
+    public Ts getTableGlobale() {
+        return tableGlobale;
     }
 }

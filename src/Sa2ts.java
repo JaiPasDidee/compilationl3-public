@@ -28,12 +28,13 @@ public class Sa2ts extends SaDepthFirstVisitor <Void>{
 
     @Override
     public Void visit(SaVarIndicee node) {
+        if(!tableGlobale.fonctions.containsKey(node.getNom())) throw new RuntimeException("La variable " + node.getNom() + " n'a pas été définie");
         return super.visit(node);
     }
 
     @Override
     public Void visit(SaDecTab node) {
-        String identif = node.getNom()
+        String identif = node.getNom();
         if(tableLocale != null){
 
         }
@@ -65,6 +66,7 @@ public class Sa2ts extends SaDepthFirstVisitor <Void>{
 
     @Override
     public Void visit(SaAppel node) {
+        if(!tableGlobale.fonctions.containsKey(node.getNom())) throw new RuntimeException("La fonction " + node.getNom() + " n'a pas été déclarée.");
         return super.visit(node);
     }
 }

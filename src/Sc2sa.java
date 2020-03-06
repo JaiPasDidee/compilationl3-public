@@ -134,7 +134,6 @@ public class Sc2sa extends DepthFirstAdapter {
         node.getListedecvar().apply(this);
         SaLDec op1 = (SaLDec) this.returnValue;
         this.returnValue = new SaLDec(op1.getTete(), op1.getQueue());
-
     }
 
     @Override

@@ -1,5 +1,6 @@
 import sa.*;
 import ts.Ts;
+import ts.TsItemVar;
 
 public class Sa2ts extends SaDepthFirstVisitor <Void>{
 
@@ -18,7 +19,7 @@ public class Sa2ts extends SaDepthFirstVisitor <Void>{
 
     @Override
     public Void visit(SaVarSimple node) {
-        if(!tableLocale.variables.containsKey(node.getNom()) && tableLocale != null) {
+        if(!(tableLocale != null && tableLocale.variables.containsKey(node.getNom()))) {
             if (!tableGlobale.variables.containsKey(node.getNom())) {
                 throw new RuntimeException("Variable " + node.getNom() + " non déclarée");
             }
@@ -35,9 +36,8 @@ public class Sa2ts extends SaDepthFirstVisitor <Void>{
     @Override
     public Void visit(SaDecTab node) {
         String identif = node.getNom();
-        if(tableLocale != null){
-
-        }
+        if(tableLocale != null) throw new RuntimeException("On ne peut pas déclarer un tableau dans une fonction");
+        if(tableGlobale.variables.containsKey(identif)) throw new RuntimeException("Le tableau " + identif + " a déjà été défini");
         tableGlobale.addVar(node.getNom(),node.getTaille());
         return super.visit(node);
     }
@@ -46,32 +46,45 @@ public class Sa2ts extends SaDepthFirstVisitor <Void>{
     public Void visit(SaDecFonc node) {
         String identif = node.getNom();
         tableLocale = new Ts();
-        if(tableGlobale.fonctions.containsKey(identif)){
-            throw new RuntimeException("Fonction " + identif + " déjà déclarée");
-        }
+        if(tableGlobale.fonctions.containsKey(identif)) throw new RuntimeException("Fonction " + identif + " déjà déclarée");
         int arg ;
-        if(node.getParametres() == null) arg = 0;
-        else arg = node.getParametres().length();
-        tableGlobale.addFct(identif,arg , new Ts(), node);
+        if(node.getVariable() == null) arg = 0;
+        else arg = node.getVariable().length();
+        tableGlobale.addFct(identif,arg , tableLocale, node);
+        SaLDec lparam = node.getVariable();
+        SaDec tete;
+
+        if (node.getParametres() != null) {
+            node.getParametres().accept(this);
+        }
+        while (lparam != null && (tete = lparam.getTete()) != null) {
+            tableLocale.addParam(tete.getNom());
+            lparam = lparam.getQueue();
+        }
+
+        node.getCorps().accept(this);
         tableLocale = null;
-        return  super.visit(node);
+        return  null;
     }
 
 
 
     @Override
     public Void visit(SaDecVar node) {
-        Ts porte = node.tsItem.portee;
-        if(porte.variables.containsKey(node.getNom()) || (tableLocale.fonctions.containsKey(node.getNom()))) throw new RuntimeException("Variable " + node.getNom() + " déjà déclarée");
-        porte.addVar(node.getNom(), 1);
+        Ts table;
+        if(tableLocale == null) table = tableGlobale;
+        else table = tableLocale;
+        if((table.variables.containsKey(node.getNom()))) throw new RuntimeException("Variable " + node.getNom() + " déjà déclarée");
+        table.addVar(node.getNom(), 1);
         return super.visit(node);
     }
 
+
     @Override
     public Void visit(SaAppel node) {
-        if(!tableGlobale.fonctions.containsKey(node.getNom())) throw new RuntimeException("La fonction " + node.getNom() + " n'a pas été déclarée.");
-        if(tableGlobale.fonctions.get(node.getNom()).nbArgs != node.getArguments().length()) throw new RuntimeException("Le nombre d'argument de la fonction "+ node.getNom() + " est invalide.");
-        if (!tableGlobale.fonctions.containsKey("main")) throw new RuntimeException("Pas de fonction main");
+        if (!tableGlobale.fonctions.containsKey(node.getNom())) {
+            throw new RuntimeException("La fonction " + node.getNom() + "n'a pas été définie");
+        }
         return super.visit(node);
     }
 

@@ -1,7 +1,4 @@
-import c3a.C3a;
-import c3a.C3aInstMult;
-import c3a.C3aOperand;
-import c3a.C3aTemp;
+import c3a.*;
 import sa.*;
 import sc.node.Node;
 import ts.Ts;
@@ -69,7 +66,11 @@ public class Sa2c3a extends SaDepthFirstVisitor <C3aOperand>{
 
     @Override
     public C3aOperand visit(SaInstAffect node) {
-        return super.visit(node);
+        C3aTemp temp = c3a.newTemp();
+        SaVar left = node.getLhs();
+        SaExp right = node.getRhs();
+        c3a.ajouteInst(new C3aInstAffect(left.accept(this), right.accept(this), ""));
+        return temp;
     }
 
     @Override
@@ -94,13 +95,19 @@ public class Sa2c3a extends SaDepthFirstVisitor <C3aOperand>{
 
     @Override
     public C3aOperand visit(SaExpAdd node) {
-        return super.visit(node);
-    }
+        C3aTemp temp = c3a.newTemp();
+        SaExp op1 = node.getOp1();
+        SaExp op2 = node.getOp2();
+        c3a.ajouteInst(new C3aInstAdd(op1.accept(this), op2.accept(this),temp,""));
+        return temp;    }
 
     @Override
     public C3aOperand visit(SaExpSub node) {
-        return super.visit(node);
-    }
+        C3aTemp temp = c3a.newTemp();
+        SaExp op1 = node.getOp1();
+        SaExp op2 = node.getOp2();
+        c3a.ajouteInst(new C3aInstSub(op1.accept(this), op2.accept(this),temp,""));
+        return temp;    }
 
     @Override
     public C3aOperand visit(SaExpMult node) {
@@ -113,7 +120,11 @@ public class Sa2c3a extends SaDepthFirstVisitor <C3aOperand>{
 
     @Override
     public C3aOperand visit(SaExpDiv node) {
-        return super.visit(node);
+        C3aTemp temp = c3a.newTemp();
+        SaExp op1 = node.getOp1();
+        SaExp op2 = node.getOp2();
+        c3a.ajouteInst(new C3aInstDiv(op1.accept(this), op2.accept(this),temp,""));
+        return temp;
     }
 
     @Override

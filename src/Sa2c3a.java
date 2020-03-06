@@ -41,12 +41,23 @@ public class Sa2c3a extends SaDepthFirstVisitor <C3aOperand>{
 
     @Override
     public C3aOperand visit(SaInstEcriture node) {
-        return super.visit(node);
+        SaExp op1 = node.getArg();
+        c3a.ajouteInst(new C3aInstWrite(op1.accept(this), ""));
+        return null;
     }
 
     @Override
     public C3aOperand visit(SaInstTantQue node) {
-        return super.visit(node);
+        //TODO on a pas fini il faut des temporaires sans doute et aussi c'est la merde
+        C3aLabel suite = c3a.newAutoLabel();
+        C3aLabel test = c3a.newAutoLabel();
+        c3a.addLabelToNextInst(test);
+        C3aOperand tq = node.getTest().accept(this);
+        c3a.ajouteInst(new C3aInstJumpIfEqual(tq, c3a.False, suite, ""));
+        node.getFaire().accept(this);
+        c3a.ajouteInst(new C3aInstJump(test, ""));
+        c3a.addLabelToNextInst(suite);
+        return null;
     }
 
     @Override
@@ -56,7 +67,10 @@ public class Sa2c3a extends SaDepthFirstVisitor <C3aOperand>{
 
     @Override
     public C3aOperand visit(SaDecFonc node) {
-        return super.visit(node);
+        c3a.ajouteInst(new C3aInstFBegin(node.tsItem, ""));
+        node.getCorps().accept(this);
+        c3a.ajouteInst((new C3aInstFEnd("")));
+        return null;
     }
 
     @Override
@@ -128,17 +142,45 @@ public class Sa2c3a extends SaDepthFirstVisitor <C3aOperand>{
 
     @Override
     public C3aOperand visit(SaExpInf node) {
-        return super.visit(node);
-    }
+        C3aTemp temp = c3a.newTemp();
+        C3aLabel e1 = c3a.newAutoLabel();
+        C3aLabel e2 = c3a.newAutoLabel();
+        c3a.ajouteInst(new C3aInstAffect(temp,c3a.True,""));
+        c3a.ajouteInst(new C3aInstJumpIfLess(node.getOp1().accept(this),node.getOp2().accept(this),e2,""));
+        c3a.ajouteInst(new C3aInstAffect(temp,c3a.False,""));
+        c3a.addLabelToNextInst(e2);
+        c3a.ajouteInst(new C3aInstJumpIfEqual(temp, c3a.False, e1, ""));
+        c3a.addLabelToNextInst(e1);
+        return temp;
+     }
 
     @Override
     public C3aOperand visit(SaExpEqual node) {
-        return super.visit(node);
+        C3aTemp temp = c3a.newTemp();
+        C3aLabel e1 = c3a.newAutoLabel();
+        C3aLabel e2 = c3a.newAutoLabel();
+        c3a.ajouteInst(new C3aInstAffect(temp,c3a.True,""));
+        c3a.ajouteInst(new C3aInstJumpIfEqual(node.getOp1().accept(this),node.getOp2().accept(this),e2,""));
+        c3a.ajouteInst(new C3aInstAffect(temp,c3a.False,""));
+        c3a.addLabelToNextInst(e2);
+        c3a.ajouteInst(new C3aInstJumpIfEqual(temp, c3a.False, e1, ""));
+        c3a.addLabelToNextInst(e1);
+        return temp;
     }
 
     @Override
     public C3aOperand visit(SaExpAnd node) {
-        return super.visit(node);
+        C3aTemp temp = c3a.newTemp();
+        C3aLabel e1 = c3a.newAutoLabel();
+        C3aLabel e2 = c3a.newAutoLabel();
+        c3a.ajouteInst(new C3aInstJumpIfEqual(node.getOp1().accept(this),c3a.False,e1,""));
+        c3a.ajouteInst(new C3aInstJumpIfEqual(node.getOp2().accept(this),c3a.False,e1,""));
+        c3a.ajouteInst(new C3aInstAffect(temp,c3a.True,""));
+        c3a.ajouteInst(new C3aInstJump(e2,""));
+        c3a.addLabelToNextInst(e1);
+        c3a.ajouteInst(new C3aInstAffect(temp,c3a.False,""));
+        c3a.addLabelToNextInst(e2);
+        return temp;
     }
 
     @Override

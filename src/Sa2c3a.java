@@ -66,11 +66,10 @@ public class Sa2c3a extends SaDepthFirstVisitor <C3aOperand>{
 
     @Override
     public C3aOperand visit(SaInstAffect node) {
-        C3aTemp temp = c3a.newTemp();
         SaVar left = node.getLhs();
         SaExp right = node.getRhs();
         c3a.ajouteInst(new C3aInstAffect(left.accept(this), right.accept(this), ""));
-        return temp;
+        return null;
     }
 
     @Override
@@ -154,7 +153,8 @@ public class Sa2c3a extends SaDepthFirstVisitor <C3aOperand>{
 
     @Override
     public C3aOperand visit(SaExpLire node) {
-        return super.visit(node);
+        c3a.ajouteInst(new C3aInstRead(node.accept(this), ""));
+        return null;
     }
 
     @Override

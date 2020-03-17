@@ -57,6 +57,7 @@ public class Compiler
 
 	    System.out.print("[PRINT C3A]");
 	    c3a.affiche(baseName);
+		new C3aEval(c3a, table).affiche(baseName);
 
 	    /**
 	    System.out.println("[NASM]");

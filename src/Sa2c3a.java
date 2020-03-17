@@ -229,7 +229,18 @@ public class  Sa2c3a extends SaDepthFirstVisitor <C3aOperand>{
 
     @Override
     public C3aOperand visit(SaInstSi node) {
-        return super.visit(node);
+        C3aTemp temp = c3a.newTemp();
+        C3aLabel alors = c3a.newAutoLabel();
+        C3aLabel sinon = c3a.newAutoLabel();
+        c3a.ajouteInst(new C3aInstAffect(temp,c3a.True,""));
+        c3a.ajouteInst(new C3aInstJumpIfEqual(node.getTest().accept(this), c3a.True,sinon,"si  est vrzi"));
+        c3a.ajouteInst(new C3aInstAffect(temp,c3a.False,""));
+        node.getAlors().accept(this);
+        c3a.addLabelToNextInst(sinon);
+        node.getSinon().accept(this);
+        c3a.addLabelToNextInst(alors);
+
+        return temp;
     }
 
     @Override

@@ -239,13 +239,13 @@ public class  Sa2c3a extends SaDepthFirstVisitor <C3aOperand>{
         c3a.addLabelToNextInst(sinon);
         node.getSinon().accept(this);
         c3a.addLabelToNextInst(alors);
-
         return temp;
     }
 
     @Override
     public C3aOperand visit(SaInstRetour node) {
-        return super.visit(node);
+        c3a.ajouteInst(new C3aInstReturn(node.getVal().accept(this),"return"));
+        return null;
     }
 
     @Override

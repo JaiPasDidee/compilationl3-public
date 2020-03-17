@@ -189,7 +189,6 @@ public class  Sa2c3a extends SaDepthFirstVisitor <C3aOperand>{
 
     @Override
     public C3aOperand visit(SaExpOr node) {
-        return super.visit(node);
         //TODO à vérifier parce que c'est la merde
         C3aLabel non = c3a.newAutoLabel();
         C3aLabel oui = c3a.newAutoLabel();
@@ -209,8 +208,16 @@ public class  Sa2c3a extends SaDepthFirstVisitor <C3aOperand>{
     @Override
     public C3aOperand visit(SaExpNot node) {
         //TODO c'est la merde
-        node.getOp2();
-        return new C3aConstant(!(node.getOp1().accept(this)));;
+        C3aTemp temp = c3a.newTemp();
+        C3aLabel e1 = c3a.newAutoLabel();
+        C3aLabel e2 = c3a.newAutoLabel();
+        c3a.ajouteInst(new C3aInstAffect(temp,c3a.True,""));
+        c3a.ajouteInst(new C3aInstJumpIfEqual(node.getOp1().accept(this),node.getOp1().accept(this),e2,""));
+        c3a.ajouteInst(new C3aInstAffect(temp,c3a.False,""));
+        c3a.addLabelToNextInst(e2);
+        c3a.ajouteInst(new C3aInstJumpIfEqual(temp, c3a.False, e1, ""));
+        c3a.addLabelToNextInst(e1);
+        return temp; //new C3aConstant(!(node.getOp1().accept(this)));;
     }
 
     @Override

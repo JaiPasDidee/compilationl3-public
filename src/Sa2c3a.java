@@ -51,13 +51,6 @@ public class  Sa2c3a extends SaDepthFirstVisitor <C3aOperand>{
     }
 
     @Override
-    public C3aOperand visit(SaLInst node) {
-        node.getTete().accept(this);
-        if(node.getQueue() != null) node.getQueue().accept(this);
-        return null;
-    }
-
-    @Override
     public C3aOperand visit(SaDecFonc node) {
         tableLocale = tableGlobale.getTableLocale(node.getNom());
         c3a.ajouteInst(new C3aInstFBegin(tableGlobale.getFct(node.getNom()), "Declaration de fonction"));

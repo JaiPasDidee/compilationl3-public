@@ -73,7 +73,7 @@ public class  Sa2c3a extends SaDepthFirstVisitor <C3aOperand>{
         if(tableLocale.getVar(node.getNom())!= null && tableLocale != null){
             node.tsItem = tableLocale.getVar(node.getNom());
         }else node.tsItem = tableGlobale.getVar(node.getNom());
-        return new C3aVar(node.tsItem, c3a.False);
+        return new C3aVar(node.tsItem, null);
     }
 
     @Override

@@ -71,14 +71,7 @@ public class  Sa2c3a extends SaDepthFirstVisitor <C3aOperand>{
     public C3aOperand visit(SaInstAffect node) {
         SaVar left = node.getLhs();
         SaExp right = node.getRhs();
-        c3a.ajouteInst(new C3aInstAffect(left.accept(this), right.accept(this), ""));
-        return null;
-    }
-
-    @Override
-    public C3aOperand visit(SaLDec node) {
-        node.getTete().accept(this);
-        if(node.getQueue() != null) node.getQueue().accept(this);
+        c3a.ajouteInst(new C3aInstAffect(right.accept(this), left.accept(this), ""));
         return null;
     }
 
@@ -146,15 +139,12 @@ public class  Sa2c3a extends SaDepthFirstVisitor <C3aOperand>{
 
     @Override
     public C3aOperand visit(SaExpInf node) {
-        C3aTemp temp = c3a.newTemp();
-        C3aLabel e1 = c3a.newAutoLabel();
-        C3aLabel e2 = c3a.newAutoLabel();
-        c3a.ajouteInst(new C3aInstAffect(temp,c3a.True,""));
-        c3a.ajouteInst(new C3aInstJumpIfLess(node.getOp1().accept(this),node.getOp2().accept(this),e2,""));
-        c3a.ajouteInst(new C3aInstAffect(temp,c3a.False,""));
-        c3a.addLabelToNextInst(e2);
-        c3a.ajouteInst(new C3aInstJumpIfEqual(temp, c3a.False, e1, ""));
-        c3a.addLabelToNextInst(e1);
+        C3aLabel testValue;
+        C3aTemp temp;
+        c3a.ajouteInst(new C3aInstAffect(c3a.True, temp = c3a.newTemp(), "affectation"));
+        c3a.ajouteInst(new C3aInstJumpIfLess(node.getOp1().accept(this), node.getOp2().accept(this), testValue = c3a.newAutoLabel(), ""));
+        c3a.ajouteInst(new C3aInstAffect(c3a.False, temp, ""));
+        c3a.addLabelToNextInst(testValue);
         return temp;
      }
 

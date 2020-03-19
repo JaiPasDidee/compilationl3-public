@@ -96,13 +96,7 @@ public class  Sa2c3a extends SaDepthFirstVisitor <C3aOperand>{
 
     @Override
     public C3aOperand visit(SaExpAppel node) {
-        C3aTemp temp = c3a.newTemp();
-        C3aTemp temp2 = c3a.newTemp();
-        node.getVal().getArguments().accept(this);
-        C3aFunction fonction = new C3aFunction(tableGlobale.getFct(node.getVal().getNom()));
-        c3a.ajouteInst(new C3aInstCall(fonction,temp,"appel de fonction"));
-        c3a.ajouteInst(new C3aInstAffect(temp, temp2,"affectation de l'appel"));
-        return temp2;
+        return node.getVal().accept(this);
     }
 
     @Override

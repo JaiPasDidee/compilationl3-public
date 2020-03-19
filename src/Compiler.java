@@ -59,12 +59,12 @@ public class Compiler
 	    c3a.affiche(baseName);
 		new C3aEval(c3a, table).affiche(baseName);
 
-	    /**
+
 	    System.out.println("[NASM]");
 	    Nasm nasm = new C3a2nasm(c3a, table).getNasm();
 	    System.out.println("[PRINT PRE NASM] ");
 	    nasm.affichePre(baseName);
-		 **/
+
       /*
 	    System.out.print("[BUILD FG] ");
 	    Fg fg = new Fg(nasm);

@@ -70,7 +70,9 @@ public class  Sa2c3a extends SaDepthFirstVisitor <C3aOperand>{
 
     @Override
     public C3aOperand visit(SaVarSimple node) {
-        node.tsItem = tableGlobale.getVar(node.getNom());
+        if(tableLocale.getVar(node.getNom())!= null && tableLocale != null){
+            node.tsItem = tableLocale.getVar(node.getNom());
+        }else node.tsItem = tableGlobale.getVar(node.getNom());
         return new C3aVar(node.tsItem, c3a.False);
     }
 
@@ -82,7 +84,10 @@ public class  Sa2c3a extends SaDepthFirstVisitor <C3aOperand>{
             c3a.ajouteInst(new C3aInstParam(tail.getTete().accept(this),""));
             tail = tail.getQueue();
         }
-        C3aFunction fonction = new C3aFunction(tableGlobale.getFct(node.getNom()));
+        C3aFunction fonction;
+        if(tableLocale != null && tableLocale.getFct(node.getNom()) != null){
+             fonction = new C3aFunction(tableLocale.getFct(node.getNom()));
+        }else fonction = new C3aFunction(tableGlobale.getFct(node.getNom()));
         c3a.ajouteInst(new C3aInstCall(fonction,null,"appel de fonction"));
         return temp;
     }
@@ -189,7 +194,6 @@ public class  Sa2c3a extends SaDepthFirstVisitor <C3aOperand>{
 
     @Override
     public C3aOperand visit(SaExpNot node) {
-        //TODO c'est la merde
         C3aTemp temp = c3a.newTemp();
         C3aLabel e1 = c3a.newAutoLabel();
         C3aLabel e2 = c3a.newAutoLabel();
@@ -199,7 +203,7 @@ public class  Sa2c3a extends SaDepthFirstVisitor <C3aOperand>{
         c3a.addLabelToNextInst(e2);
         c3a.ajouteInst(new C3aInstJumpIfEqual(temp, c3a.False, e1, ""));
         c3a.addLabelToNextInst(e1);
-        return temp; //new C3aConstant(!(node.getOp1().accept(this)));;
+        return temp;
     }
 
     @Override

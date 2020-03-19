@@ -174,35 +174,36 @@ public class  Sa2c3a extends SaDepthFirstVisitor <C3aOperand>{
 
     @Override
     public C3aOperand visit(SaExpAnd node) {
+        C3aLabel faux = c3a.newAutoLabel();
+        C3aLabel vrai = c3a.newAutoLabel();
         C3aTemp temp = c3a.newTemp();
-        C3aLabel e1 = c3a.newAutoLabel();
-        C3aLabel e2 = c3a.newAutoLabel();
-        c3a.ajouteInst(new C3aInstJumpIfEqual(node.getOp1().accept(this),c3a.False,e1,""));
-        c3a.ajouteInst(new C3aInstJumpIfEqual(node.getOp2().accept(this),c3a.False,e1,""));
-        c3a.ajouteInst(new C3aInstAffect(temp,c3a.True,""));
-        c3a.ajouteInst(new C3aInstJump(e2,""));
-        c3a.addLabelToNextInst(e1);
-        c3a.ajouteInst(new C3aInstAffect(temp,c3a.False,""));
-        c3a.addLabelToNextInst(e2);
+
+        c3a.ajouteInst(new C3aInstJumpIfEqual(node.getOp1().accept(this), c3a.False, vrai, ""));
+        c3a.ajouteInst(new C3aInstJumpIfEqual(node.getOp2().accept(this), c3a.False, vrai, ""));
+        c3a.ajouteInst(new C3aInstAffect(c3a.True, temp, ""));
+        c3a.ajouteInst(new C3aInstJump(faux, ""));
+        c3a.addLabelToNextInst(vrai);
+        c3a.ajouteInst(new C3aInstAffect(c3a.False, temp, ""));
+        c3a.addLabelToNextInst(faux);
         return temp;
     }
 
     @Override
     public C3aOperand visit(SaExpOr node) {
-        //TODO à vérifier parce que c'est la merde
-        C3aLabel non = c3a.newAutoLabel();
-        C3aLabel oui = c3a.newAutoLabel();
-        C3aTemp retour = c3a.newTemp();
+        //c'est la même manière que And sauf qu'on utilise false comme point de départ et pas true
+        C3aLabel faux = c3a.newAutoLabel();
+        C3aLabel vrai = c3a.newAutoLabel();
+        C3aTemp temp = c3a.newTemp();
 
-        c3a.ajouteInst(new C3aInstJumpIfNotEqual(node.getOp1().accept(this), c3a.False, oui, ""));
-        c3a.ajouteInst(new C3aInstJumpIfNotEqual(node.getOp2().accept(this), c3a.False, oui, ""));
-        c3a.ajouteInst(new C3aInstAffect(c3a.False, retour, ""));
-        c3a.ajouteInst(new C3aInstJump(non, ""));
-        c3a.addLabelToNextInst(oui);
-        c3a.ajouteInst(new C3aInstAffect(c3a.True, retour, ""));
-        c3a.addLabelToNextInst(non);
+        c3a.ajouteInst(new C3aInstJumpIfNotEqual(node.getOp1().accept(this), c3a.False, vrai, ""));
+        c3a.ajouteInst(new C3aInstJumpIfNotEqual(node.getOp2().accept(this), c3a.False, vrai, ""));
+        c3a.ajouteInst(new C3aInstAffect(c3a.False, temp, ""));
+        c3a.ajouteInst(new C3aInstJump(faux, ""));
+        c3a.addLabelToNextInst(vrai);
+        c3a.ajouteInst(new C3aInstAffect(c3a.True, temp, ""));
+        c3a.addLabelToNextInst(faux);
 
-        return retour;
+        return temp;
     }
 
     @Override
@@ -229,17 +230,23 @@ public class  Sa2c3a extends SaDepthFirstVisitor <C3aOperand>{
 
     @Override
     public C3aOperand visit(SaInstSi node) {
-        C3aTemp temp = c3a.newTemp();
-        C3aLabel alors = c3a.newAutoLabel();
         C3aLabel sinon = c3a.newAutoLabel();
-        c3a.ajouteInst(new C3aInstAffect(temp,c3a.True,""));
-        c3a.ajouteInst(new C3aInstJumpIfEqual(node.getTest().accept(this), c3a.True,sinon,"si  est vrzi"));
-        c3a.ajouteInst(new C3aInstAffect(temp,c3a.False,""));
-        node.getAlors().accept(this);
-        c3a.addLabelToNextInst(sinon);
-        node.getSinon().accept(this);
-        c3a.addLabelToNextInst(alors);
-        return temp;
+        C3aLabel fin = c3a.newAutoLabel();
+
+        SaInst instSinon = node.getSinon();
+        if (instSinon == null) {
+            c3a.ajouteInst(new C3aInstJumpIfEqual(node.getTest().accept(this), c3a.False, fin, "si sans else"));
+            node.getAlors().accept(this);
+        } else {
+            c3a.ajouteInst(new C3aInstJumpIfEqual(node.getTest().accept(this), c3a.False, sinon, "si avec else"));
+            node.getAlors().accept(this);
+            c3a.ajouteInst(new C3aInstJump(fin, ""));
+            c3a.addLabelToNextInst(sinon);
+            instSinon.accept(this);
+        }
+
+        c3a.addLabelToNextInst(fin);
+        return null;
     }
 
     @Override

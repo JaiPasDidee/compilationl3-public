@@ -256,15 +256,8 @@ public class  Sa2c3a extends SaDepthFirstVisitor <C3aOperand>{
     }
 
     @Override
-    public C3aOperand visit(SaLExp node) {
-        if(node.getQueue() != null) node.getQueue().accept(this);
-        c3a.ajouteInst(new C3aInstParam(node.getTete().accept(this),"Paramètres"));
-        return null;
-    }
-
-    @Override
     public C3aOperand visit(SaVarIndicee node) {
-        return super.visit(node);
+        return new C3aVar(tableGlobale.getVar(node.getNom()), node.getIndice().accept(this));
     }
 
     public C3a getC3a() {

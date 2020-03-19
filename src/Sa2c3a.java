@@ -88,7 +88,7 @@ public class  Sa2c3a extends SaDepthFirstVisitor <C3aOperand>{
         if(tableLocale != null && tableLocale.getFct(node.getNom()) != null){
              fonction = new C3aFunction(tableLocale.getFct(node.getNom()));
         }else fonction = new C3aFunction(tableGlobale.getFct(node.getNom()));
-        c3a.ajouteInst(new C3aInstCall(fonction,null,"appel de fonction"));
+        c3a.ajouteInst(new C3aInstCall(fonction,temp,"appel de fonction"));
         return temp;
     }
 

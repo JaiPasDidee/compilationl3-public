@@ -1,6 +1,6 @@
 import c3a.*;
 import nasm.Nasm;
-import nasm.NasmOperand;
+import nasm.*;
 import ts.Ts;
 
 public class C3a2nasm implements C3aVisitor<NasmOperand> {
@@ -17,6 +17,12 @@ public class C3a2nasm implements C3aVisitor<NasmOperand> {
 
     @Override
     public NasmOperand visit(C3aInstAdd inst) {
+        NasmOperand label = (inst.label != null) ? inst.label.accept(this) : null;
+        NasmOperand oper1 = inst.op1.accept(this);
+        NasmOperand oper2 = inst.op2.accept(this);
+        NasmOperand dest = inst.result.accept(this);
+        nasm.ajouteInst(new NasmMov(label, dest, oper1, ""));
+        nasm.ajouteInst(new NasmAdd(null, dest, oper2, ""));
         return null;
     }
 

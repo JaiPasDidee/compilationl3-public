@@ -44,6 +44,7 @@ public class C3a2nasm implements C3aVisitor<NasmOperand> {
         reg_ebp.colorRegister(Nasm.REG_ESP);
         nasm.ajouteInst(new NasmMov(null,reg_ebp,reg_esp,"Nouvelle valeur de ebp"));
         nasm.ajouteInst(new NasmSub(null,reg_esp,new NasmConstant(4*fonction.getTable().nbVar()),"Allocation de mémoire dans la pile pour les variables locales"));
+        return null;
     }
 
     @Override

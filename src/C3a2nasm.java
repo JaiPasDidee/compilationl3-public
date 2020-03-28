@@ -144,6 +144,12 @@ public class C3a2nasm implements C3aVisitor<NasmOperand> {
 
     @Override
     public NasmOperand visit(C3aInstWrite inst) {
+        NasmOperand label = (inst.label != null) ? inst.label.accept(this) : null;
+        NasmRegister reg_eax = nasm.newRegister();
+        reg_eax.colorRegister(Nasm.REG_EAX);
+        nasm.ajouteInst(new NasmMov(label,reg_eax, new NasmConstant(fonction.getTable().nbVar()*1),""));
+        NasmLabel IprintLF = new NasmLabel("iprintLF");
+        nasm.ajouteInst(new NasmCall(null,IprintLF,"appel de printf"));
         return null;
     }
 

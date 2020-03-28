@@ -7,6 +7,7 @@ import ts.TsItemFct;
 public class C3a2nasm implements C3aVisitor<NasmOperand> {
 
     private Nasm nasm;
+    private TsItemFct fonction;
 
     public C3a2nasm(C3a c3a, Ts table) {
         this.nasm = new Nasm(table);
@@ -105,6 +106,14 @@ public class C3a2nasm implements C3aVisitor<NasmOperand> {
 
     @Override
     public NasmOperand visit(C3aInstFEnd inst) {
+        NasmOperand label = (inst.label != null) ? inst.label.accept(this) : null;
+        NasmRegister reg_esp = nasm.newRegister();
+        reg_esp.colorRegister(Nasm.REG_ESP);
+        NasmRegister reg_ebp = nasm.newRegister();
+        reg_ebp.colorRegister(Nasm.REG_EBP);
+        nasm.ajouteInst(new NasmAdd(label, reg_esp,new NasmConstant(fonction.getTable().nbVar()*4),"Désallocation de la mémoire occupée par les variables locales")));
+        nasm.ajouteInst(new NasmPop(null,reg_ebp,"Restauration de l’ancienne valeur de ebp (d’avant l’appel)"));
+        nasm.ajouteInst(new NasmRet(null,"return"));
         return null;
     }
 

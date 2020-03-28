@@ -48,6 +48,12 @@ public class C3a2nasm implements C3aVisitor<NasmOperand> {
 
     @Override
     public NasmOperand visit(C3aInstMult inst) {
+        NasmOperand label = (inst.label != null) ? inst.label.accept(this) : null;
+        NasmOperand oper1 = inst.op1.accept(this);
+        NasmOperand oper2 = inst.op2.accept(this);
+        NasmOperand dest = inst.result.accept(this);
+        nasm.ajouteInst(new NasmMov(label, dest, oper1, ""));
+        nasm.ajouteInst(new NasmMul(null, dest, oper2, ""));
         return null;
     }
 

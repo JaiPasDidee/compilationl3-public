@@ -13,6 +13,18 @@ public class C3a2nasm implements C3aVisitor<NasmOperand> {
 
     public C3a2nasm(C3a c3a, Ts table) {
         this.nasm = new Nasm(table);
+        NasmLabel labelMain = new NasmLabel("main");
+        nasm.ajouteInst(new NasmCall(null, labelMain, ""));
+        NasmRegister reg_eax = nasm.newRegister();
+        reg_eax.colorRegister(Nasm.REG_EAX);
+        NasmRegister reg_ebx = nasm.newRegister();
+        reg_ebx.colorRegister(Nasm.REG_EBX);
+        nasm.ajouteInst(new NasmMov(null, reg_ebx, new NasmConstant(0), " valeur de retour du programme"));
+        nasm.ajouteInst(new NasmMov(null, reg_eax, new NasmConstant(1), ""));
+        nasm.ajouteInst(new NasmInt(null, ""));
+        for (C3aInst instruction : c3a.listeInst) {
+            instruction.accept(this);
+        }
     }
 
     public Nasm getNasm() {

@@ -181,6 +181,10 @@ public class C3a2nasm implements C3aVisitor<NasmOperand> {
 
     @Override
     public NasmOperand visit(C3aInstReturn inst) {
+        NasmOperand label = (inst.label != null) ? inst.label.accept(this) : null;
+        NasmRegister reg_ebp = nasm.newRegister();
+        reg_ebp.colorRegister(Nasm.REG_EBP);
+        nasm.ajouteInst(new NasmMov(label, new NasmAddress(reg_ebp, '+', new NasmConstant(2)), inst.op1.accept(this),"mov"));
         return null;
     }
 

@@ -201,17 +201,17 @@ public class C3a2nasm implements C3aVisitor<NasmOperand> {
 
     @Override
     public NasmOperand visit(C3aConstant oper) {
-        return null;
+        return new NasmConstant(oper.val);
     }
 
     @Override
     public NasmOperand visit(C3aLabel oper) {
-        return new NasmConstant(oper.getNumber());
+        return new NasmLabel(oper.toString());
     }
 
     @Override
     public NasmOperand visit(C3aTemp oper) {
-        return new NasmLabel(oper.toString());
+        return ;
     }
 
     @Override

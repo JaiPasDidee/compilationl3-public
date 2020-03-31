@@ -44,6 +44,14 @@ public class C3a2nasm implements C3aVisitor<NasmOperand> {
 
     @Override
     public NasmOperand visit(C3aInstCall inst) {
+        NasmOperand label = (inst.label != null) ? inst.label.accept(this) : null;
+        NasmRegister reg_esp = nasm.newRegister();
+        reg_esp.colorRegister(Nasm.REG_ESP);
+        NasmLabel fonction = new NasmLabel(inst.op1.toString());
+        nasm.ajouteInst(new NasmSub(label,reg_esp,new NasmConstant(4),"allocation"));
+        nasm.ajouteInst(new NasmCall(null,fonction, "appel de la fonction"));
+        nasm.ajouteInst(new NasmPop(null,inst.result.accept(this),"valeur de retour"));
+        nasm.ajouteInst(new NasmAdd(null, reg_esp, new NasmConstant(8), "desalocation"));
         return null;
     }
 

@@ -216,11 +216,14 @@ public class C3a2nasm implements C3aVisitor<NasmOperand> {
 
     @Override
     public NasmOperand visit(C3aVar oper) {
+        //TODO faire la fonction mais xesh jai 0 idee la
+        //rien faire ??
         return null;
     }
 
     @Override
     public NasmOperand visit(C3aFunction oper) {
+        //rien faire ??
         return null;
     }
 }

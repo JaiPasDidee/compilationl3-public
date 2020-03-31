@@ -72,11 +72,15 @@ public class C3a2nasm implements C3aVisitor<NasmOperand> {
 
     @Override
     public NasmOperand visit(C3aInst inst) {
+        //doit rester intact ?
         return null;
     }
 
     @Override
     public NasmOperand visit(C3aInstJumpIfLess inst) {
+        NasmOperand label = (inst.label != null) ? inst.label.accept(this) : null;
+        nasm.ajouteInst(new NasmCmp(label, inst.op1.accept(this), inst.op2.accept(this), "instruction du si"));
+        nasm.ajouteInst(new NasmJe(null, inst.result.accept(this),"goto"));
         return null;
     }
 

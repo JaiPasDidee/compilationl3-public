@@ -97,6 +97,7 @@ public class C3a2nasm implements C3aVisitor<NasmOperand> {
 
     @Override
     public NasmOperand visit(C3aInstRead inst) {
+        //doit rester intact ??
         return null;
     }
 
@@ -113,6 +114,11 @@ public class C3a2nasm implements C3aVisitor<NasmOperand> {
 
     @Override
     public NasmOperand visit(C3aInstAffect inst) {
+        //affectation a un registre simplement ?
+        NasmOperand label = (inst.label != null) ? inst.label.accept(this) : null;
+        NasmRegister reg_eax = nasm.newRegister();
+        reg_eax.colorRegister(Nasm.REG_EAX);
+        nasm.ajouteInst(new NasmMov(label, inst.result.accept(this), inst.op1.accept(this), "Affect"));
         return null;
     }
 

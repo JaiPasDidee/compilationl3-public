@@ -13,6 +13,7 @@ public class C3a2nasm implements C3aVisitor<NasmOperand> {
 
     public C3a2nasm(C3a c3a, Ts table) {
         this.nasm = new Nasm(table);
+        nasm.setTempCounter(c3a.getTempCounter());
         NasmLabel labelMain = new NasmLabel("main");
         nasm.ajouteInst(new NasmCall(null, labelMain, ""));
         NasmRegister reg_eax = nasm.newRegister();
@@ -193,7 +194,7 @@ public class C3a2nasm implements C3aVisitor<NasmOperand> {
         NasmOperand label = (inst.label != null) ? inst.label.accept(this) : null;
         NasmRegister reg_eax = nasm.newRegister();
         reg_eax.colorRegister(Nasm.REG_EAX);
-        nasm.ajouteInst(new NasmMov(label,reg_eax, new NasmConstant(currentFct.getTable().nbVar()*1),""));
+        nasm.ajouteInst(new NasmMov(label,reg_eax, inst.op1.accept(this),""));
         NasmLabel IprintLF = new NasmLabel("iprintLF");
         nasm.ajouteInst(new NasmCall(null,IprintLF,"appel de printf"));
         return null;

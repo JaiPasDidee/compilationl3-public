@@ -62,10 +62,10 @@ public class C3a2nasm implements C3aVisitor<NasmOperand> {
         currentFct.nbArgs = inst.val.nbArgs;
         NasmRegister reg_ebp = nasm.newRegister();
         reg_ebp.colorRegister(Nasm.REG_EBP);
+        NasmRegister reg_esp = nasm.newRegister();
+        reg_esp.colorRegister(Nasm.REG_ESP);
         NasmLabel label = new NasmLabel(currentFct.getIdentif());
         nasm.ajouteInst(new NasmPush(label,reg_ebp,"Sauvegarde dans la pile de l’ancienne valeur de ebp"));
-        NasmRegister reg_esp = nasm.newRegister();
-        reg_ebp.colorRegister(Nasm.REG_ESP);
         nasm.ajouteInst(new NasmMov(null,reg_ebp,reg_esp,"Nouvelle valeur de ebp"));
         nasm.ajouteInst(new NasmSub(null,reg_esp,new NasmConstant(4*currentFct.getTable().nbVar()),"Allocation de mémoire dans la pile pour les variables locales"));
         return null;

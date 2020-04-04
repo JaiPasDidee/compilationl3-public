@@ -3,6 +3,7 @@ import nasm.Nasm;
 import nasm.*;
 import ts.Ts;
 import ts.TsItemFct;
+import ts.TsItemVar;
 
 public class C3a2nasm implements C3aVisitor<NasmOperand> {
 
@@ -110,7 +111,7 @@ public class C3a2nasm implements C3aVisitor<NasmOperand> {
         NasmOperand dest = inst.result.accept(this);
         nasm.ajouteInst(new NasmMov(label, dest, oper1, ""));
         nasm.ajouteInst(new NasmSub(null, dest, oper2, ""));
-        return null;
+        return dest;
     }
 
     @Override
@@ -131,7 +132,7 @@ public class C3a2nasm implements C3aVisitor<NasmOperand> {
         nasm.ajouteInst(new NasmMov(null, destination, inst.op2.accept(this), ""));
         nasm.ajouteInst(new NasmDiv(null, destination, ""));
         nasm.ajouteInst(new NasmMov(null, result, reg_eax, ""));
-        return null;
+        return destination;
     }
 
     @Override
@@ -173,7 +174,7 @@ public class C3a2nasm implements C3aVisitor<NasmOperand> {
     @Override
     public NasmOperand visit(C3aInstParam inst) {
         NasmOperand label = (inst.label != null) ? inst.label.accept(this) : null;
-        nasm.ajouteInst(new NasmPush(label,inst.op1.accept(this),"push"));
+        nasm.ajouteInst(new NasmPush(label,inst.op1.accept(this),"param push"));
         return null;
     }
 
@@ -214,9 +215,24 @@ public class C3a2nasm implements C3aVisitor<NasmOperand> {
 
     @Override
     public NasmOperand visit(C3aVar oper) {
-        //TODO faire la fonction mais xesh jai 0 idee la
-        //rien faire ??
-        return null;
+        //fonction filé
+        TsItemVar variable = oper.item;
+        NasmRegister reg_ebp = new NasmRegister(Nasm.REG_EBP);
+        reg_ebp.colorRegister(Nasm.REG_EBP);
+        if (variable.isParam) {
+            //argument
+            return new NasmAddress(reg_ebp, '+', new NasmConstant(2 + variable.portee.nbArg() - variable.adresse));
+        }
+        if (oper.index != null) {
+            //tableau
+            return new NasmAddress(new NasmLabel(variable.getIdentif()), '+', oper.index.accept(this));
+        }
+        if (currentFct.getTable().variables.containsKey(variable.identif)) {
+            //variable locale
+            return new NasmAddress(reg_ebp, '-', new NasmConstant(1 + variable.adresse));
+        }
+        //identifiant
+        return new NasmAddress(new NasmLabel(variable.identif));
     }
 
     @Override

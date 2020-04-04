@@ -82,7 +82,7 @@ public class C3a2nasm implements C3aVisitor<NasmOperand> {
     public NasmOperand visit(C3aInstJumpIfLess inst) {
         NasmOperand label = (inst.label != null) ? inst.label.accept(this) : null;
         nasm.ajouteInst(new NasmCmp(label, inst.op1.accept(this), inst.op2.accept(this), "instruction du si inf"));
-        nasm.ajouteInst(new NasmJe(null, inst.result.accept(this),"goto"));
+        nasm.ajouteInst(new NasmJl(null, inst.result.accept(this),"goto"));
         return null;
     }
 
@@ -129,8 +129,12 @@ public class C3a2nasm implements C3aVisitor<NasmOperand> {
         reg_eax.colorRegister(Nasm.REG_EAX);
         nasm.ajouteInst(new NasmMov(label, reg_eax, inst.op1.accept(this), ""));
         NasmRegister destination = nasm.newRegister();
-        nasm.ajouteInst(new NasmMov(null, destination, inst.op2.accept(this), ""));
-        nasm.ajouteInst(new NasmDiv(null, destination, ""));
+
+        if(inst.op2.getClass().equals(NasmConstant.class)) {
+            nasm.ajouteInst(new NasmMov(null, destination, inst.op2.accept(this), ""));
+            nasm.ajouteInst(new NasmDiv(null, destination, ""));
+        }else nasm.ajouteInst(new NasmDiv(null, inst.op2.accept(this), ""));
+
         nasm.ajouteInst(new NasmMov(null, result, reg_eax, ""));
         return null;
     }

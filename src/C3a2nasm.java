@@ -111,7 +111,7 @@ public class C3a2nasm implements C3aVisitor<NasmOperand> {
         NasmOperand dest = inst.result.accept(this);
         nasm.ajouteInst(new NasmMov(label, dest, oper1, ""));
         nasm.ajouteInst(new NasmSub(null, dest, oper2, ""));
-        return dest;
+        return null;
     }
 
     @Override
@@ -132,7 +132,7 @@ public class C3a2nasm implements C3aVisitor<NasmOperand> {
         nasm.ajouteInst(new NasmMov(null, destination, inst.op2.accept(this), ""));
         nasm.ajouteInst(new NasmDiv(null, destination, ""));
         nasm.ajouteInst(new NasmMov(null, result, reg_eax, ""));
-        return destination;
+        return null;
     }
 
     @Override
@@ -219,20 +219,36 @@ public class C3a2nasm implements C3aVisitor<NasmOperand> {
         TsItemVar variable = oper.item;
         NasmRegister reg_ebp = new NasmRegister(Nasm.REG_EBP);
         reg_ebp.colorRegister(Nasm.REG_EBP);
-        if (variable.isParam) {
-            //argument
-            return new NasmAddress(reg_ebp, '+', new NasmConstant(2 + variable.portee.nbArg() - variable.adresse));
+
+        if(variable.portee == tableGlobale){
+            //si c'est globale
+            NasmOperand porte = new NasmLabel(variable.identif);
+            //si c'est pas un tableau
+            if(variable.getTaille() == 1) return new NasmAddress(porte);
         }
-        if (oper.index != null) {
+
+        char position;
+        if(!(variable.portee == tableGlobale || variable.isParam)){
+        //savoir ou on est par rapport a ebp
+            position = '-';
+        }else position = '+';
+
+        NasmConstant decalage;
+
+        if(variable.getTaille() > 1){
             //tableau
-            return new NasmAddress(new NasmLabel(variable.getIdentif()), '+', oper.index.accept(this));
-        }
-        if (currentFct.getTable().variables.containsKey(variable.identif)) {
+            decalage = new NasmConstant(((C3aConstant) oper.index).val);
+        }else{ //param
+            if(variable.isParam) {
+                decalage = new NasmConstant(2 + variable.portee.nbArg() - variable.getAdresse());
+            }
             //variable locale
-            return new NasmAddress(reg_ebp, '-', new NasmConstant(1 + variable.adresse));
+            else {
+                decalage = new NasmConstant(1 + variable.getAdresse());
+            }
         }
-        //identifiant
-        return new NasmAddress(new NasmLabel(variable.identif));
+
+        return new NasmAddress(reg_ebp,position, decalage );
     }
 
     @Override

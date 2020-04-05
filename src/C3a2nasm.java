@@ -53,9 +53,7 @@ public class C3a2nasm implements C3aVisitor<NasmOperand> {
         nasm.ajouteInst(new NasmSub(label,reg_esp,new NasmConstant(4),"allocation"));
         nasm.ajouteInst(new NasmCall(null,fonction, "appel de la fonction"));
         nasm.ajouteInst(new NasmPop(null,inst.result.accept(this),"valeur de retour"));
-        if(tableGlobale.getFct(inst.op1.toString()).nbArgs > 0) {
-            nasm.ajouteInst(new NasmAdd(null, reg_esp, new NasmConstant(currentFct.getTable().nbVar() * 4), "désallocation des arguments"));
-        }
+        nasm.ajouteInst(new NasmAdd(null, reg_esp, new NasmConstant(currentFct.getTable().nbVar() * 4), "désallocation des arguments"));
         return null;
     }
 

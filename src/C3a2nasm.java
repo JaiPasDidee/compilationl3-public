@@ -6,6 +6,7 @@ import ts.TsItemFct;
 import ts.TsItemVar;
 
 public class C3a2nasm implements C3aVisitor<NasmOperand> {
+    //srfzgr
 
     private Nasm nasm;
     private Ts tableGlobale;
@@ -61,9 +62,9 @@ public class C3a2nasm implements C3aVisitor<NasmOperand> {
     public NasmOperand visit(C3aInstFBegin inst) {
         currentFct = inst.val;
         currentFct.nbArgs = inst.val.nbArgs;
-        NasmRegister reg_ebp = nasm.newRegister();
+        NasmRegister reg_ebp = new NasmRegister(Nasm.REG_EBP);
         reg_ebp.colorRegister(Nasm.REG_EBP);
-        NasmRegister reg_esp = nasm.newRegister();
+        NasmRegister reg_esp = new NasmRegister(Nasm.REG_ESP);
         reg_esp.colorRegister(Nasm.REG_ESP);
         NasmLabel label = new NasmLabel(currentFct.getIdentif());
         nasm.ajouteInst(new NasmPush(label,reg_ebp,"Sauvegarde dans la pile de l’ancienne valeur de ebp"));
@@ -151,9 +152,9 @@ public class C3a2nasm implements C3aVisitor<NasmOperand> {
     @Override
     public NasmOperand visit(C3aInstFEnd inst) {
         NasmOperand label = (inst.label != null) ? inst.label.accept(this) : null;
-        NasmRegister reg_esp = nasm.newRegister();
+        NasmRegister reg_esp = new NasmRegister(Nasm.REG_ESP);
         reg_esp.colorRegister(Nasm.REG_ESP);
-        NasmRegister reg_ebp = nasm.newRegister();
+        NasmRegister reg_ebp = new NasmRegister(Nasm.REG_EBP);
         reg_ebp.colorRegister(Nasm.REG_EBP);
         nasm.ajouteInst(new NasmAdd(label, reg_esp,new NasmConstant(currentFct.getTable().nbVar()*4),"Désallocation de la mémoire occupée par les variables locales"));
         nasm.ajouteInst(new NasmPop(null,reg_ebp,"Restauration de l’ancienne valeur de ebp (d’avant l’appel)"));
@@ -194,7 +195,7 @@ public class C3a2nasm implements C3aVisitor<NasmOperand> {
     @Override
     public NasmOperand visit(C3aInstReturn inst) {
         NasmOperand label = (inst.label != null) ? inst.label.accept(this) : null;
-        NasmRegister reg_ebp = nasm.newRegister();
+        NasmRegister reg_ebp = new NasmRegister(Nasm.REG_EBP);
         reg_ebp.colorRegister(Nasm.REG_EBP);
         nasm.ajouteInst(new NasmMov(label, new NasmAddress(reg_ebp, '+', new NasmConstant(2)), inst.op1.accept(this),"mov"));
         return null;

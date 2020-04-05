@@ -6,7 +6,6 @@ import ts.TsItemFct;
 import ts.TsItemVar;
 
 public class C3a2nasm implements C3aVisitor<NasmOperand> {
-    //srfzgr
 
     private Nasm nasm;
     private Ts tableGlobale;

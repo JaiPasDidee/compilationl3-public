@@ -19,6 +19,7 @@ public class Sa2ts extends SaDepthFirstVisitor <Void>{
 
     @Override
     public Void visit(SaVarSimple node) {
+        node.tsItem = (tableGlobale.variables.containsKey(node.getNom())) ? tableGlobale.variables.get(node.getNom()) : tableLocale.variables.get(node.getNom());
         if(!(tableLocale != null && tableLocale.variables.containsKey(node.getNom()))) {
             if (!tableGlobale.variables.containsKey(node.getNom())) {
                 throw new RuntimeException("Variable " + node.getNom() + " non déclarée");
@@ -29,6 +30,7 @@ public class Sa2ts extends SaDepthFirstVisitor <Void>{
 
     @Override
     public Void visit(SaVarIndicee node) {
+        node.tsItem = tableGlobale.variables.get(node.getNom());
         if(!tableGlobale.variables.containsKey(node.getNom())) throw new RuntimeException("La variable " + node.getNom() + " n'a pas été définie");
         return super.visit(node);
     }
@@ -82,6 +84,7 @@ public class Sa2ts extends SaDepthFirstVisitor <Void>{
 
     @Override
     public Void visit(SaAppel node) {
+        node.tsItem = tableGlobale.fonctions.get(node.getNom());
         if (!tableGlobale.fonctions.containsKey(node.getNom())) {
             throw new RuntimeException("La fonction " + node.getNom() + "n'a pas été définie");
         }

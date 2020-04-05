@@ -99,7 +99,16 @@ public class C3a2nasm implements C3aVisitor<NasmOperand> {
 
     @Override
     public NasmOperand visit(C3aInstRead inst) {
-        //doit rester intact ??
+        NasmOperand label = (inst.label != null) ? inst.label.accept(this) : null;
+        var dest = inst.result.accept(this);
+        var eax = nasm.newRegister();
+        eax.colorRegister(Nasm.REG_EAX);
+
+        nasm.ajouteInst(new NasmMov(label, eax, new NasmConstant(2), ""));
+        nasm.ajouteInst(new NasmCall(null, new NasmLabel("readline"), ""));
+        nasm.ajouteInst(new NasmCall(null, new NasmLabel("atoi"), ""));
+        nasm.ajouteInst(new NasmMov(null, dest, eax, ""));
+
         return null;
     }
 

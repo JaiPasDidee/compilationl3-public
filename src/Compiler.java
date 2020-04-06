@@ -73,7 +73,7 @@ public class Compiler
 			Nasm nasm = new C3a2nasm(c3a, table).getNasm();
 			System.out.println("[PRINT PRE NASM] ");
 			nasm.affichePre(baseName);
-/*
+
 			System.out.print("[BUILD FG] ");
 			Fg fg = new Fg(nasm);
 			System.out.print("[PRINT FG] ");
@@ -93,7 +93,7 @@ public class Compiler
 			ig.allocateRegisters();
 
 			System.out.println("[PRINT NASM]");
-			nasm.affiche(baseName);*/
+			nasm.affiche(baseName);
 		}
 		catch(Exception e){
 			System.out.println(e.getMessage());

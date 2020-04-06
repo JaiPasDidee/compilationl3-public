@@ -52,7 +52,9 @@ public class C3a2nasm implements C3aVisitor<NasmOperand> {
         nasm.ajouteInst(new NasmSub(label,reg_esp,new NasmConstant(4),"allocation mémoire pour la valeur de retour"));
         nasm.ajouteInst(new NasmCall(null,inst.op1.accept(this), ""));
         nasm.ajouteInst(new NasmPop(null,inst.result.accept(this),"récupération de la valeur de retour"));
-        nasm.ajouteInst(new NasmAdd(null, reg_esp, new NasmConstant(inst.op1.val.nbArgs * 4), "désallocation des arguments"));
+        if (inst.op1.val.nbArgs > 0) {
+            nasm.ajouteInst(new NasmAdd(null, reg_esp, new NasmConstant(inst.op1.val.nbArgs * 4), "désallocation des arguments"));
+        }
         return null;
     }
 
@@ -80,8 +82,8 @@ public class C3a2nasm implements C3aVisitor<NasmOperand> {
     @Override
     public NasmOperand visit(C3aInstJumpIfLess inst) {
         NasmOperand label = (inst.label != null) ? inst.label.accept(this) : null;
-        nasm.ajouteInst(new NasmCmp(label, inst.op1.accept(this), inst.op2.accept(this), "instruction du si inf"));
-        nasm.ajouteInst(new NasmJl(null, inst.result.accept(this),"goto"));
+        nasm.ajouteInst(new NasmCmp(label, inst.op1.accept(this), inst.op2.accept(this), "JumpIfLess 1"));
+        nasm.ajouteInst(new NasmJl(null, inst.result.accept(this),"JumpIfLess 2"));
         return null;
     }
 
@@ -167,8 +169,8 @@ public class C3a2nasm implements C3aVisitor<NasmOperand> {
     @Override
     public NasmOperand visit(C3aInstJumpIfNotEqual inst) {
         NasmOperand label = (inst.label != null) ? inst.label.accept(this) : null;
-        nasm.ajouteInst(new NasmCmp(label, inst.op1.accept(this), inst.op2.accept(this), "instruction du si pas egal"));
-        nasm.ajouteInst(new NasmJne(null, inst.result.accept(this),"goto"));
+        nasm.ajouteInst(new NasmCmp(label, inst.op1.accept(this), inst.op2.accept(this), "jumpIfNotEqual 1"));
+        nasm.ajouteInst(new NasmJne(null, inst.result.accept(this),"jumpIfNotEqual 2"));
         return null;
     }
 

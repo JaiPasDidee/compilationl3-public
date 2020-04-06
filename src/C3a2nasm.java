@@ -159,8 +159,8 @@ public class C3a2nasm implements C3aVisitor<NasmOperand> {
     @Override
     public NasmOperand visit(C3aInstJumpIfEqual inst) {
         NasmOperand label = (inst.label != null) ? inst.label.accept(this) : null;
-        nasm.ajouteInst(new NasmCmp(label, inst.op1.accept(this), inst.op2.accept(this), "instruction du si egal"));
-        nasm.ajouteInst(new NasmJe(null, inst.result.accept(this),"goto"));
+        nasm.ajouteInst(new NasmCmp(label, inst.op1.accept(this), inst.op2.accept(this), "JumpIfEqual 1"));
+        nasm.ajouteInst(new NasmJe(null, inst.result.accept(this),"JumpIfEqual 2"));
         return null;
     }
 
@@ -175,7 +175,7 @@ public class C3a2nasm implements C3aVisitor<NasmOperand> {
     @Override
     public NasmOperand visit(C3aInstJump inst) {
         NasmOperand label = (inst.label != null) ? inst.label.accept(this) : null;
-        nasm.ajouteInst(new NasmJmp(label, inst.result.accept(this),"goto"));
+        nasm.ajouteInst(new NasmJmp(label, inst.result.accept(this),"Jump"));
         return null;
     }
 

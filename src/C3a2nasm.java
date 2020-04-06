@@ -49,11 +49,10 @@ public class C3a2nasm implements C3aVisitor<NasmOperand> {
         NasmOperand label = (inst.label != null) ? inst.label.accept(this) : null;
         NasmRegister reg_esp = new NasmRegister(Nasm.REG_ESP);
         reg_esp.colorRegister(Nasm.REG_ESP);
-        NasmLabel fonction = new NasmLabel(inst.op1.toString());
-        nasm.ajouteInst(new NasmSub(label,reg_esp,new NasmConstant(4),"allocation"));
-        nasm.ajouteInst(new NasmCall(null,fonction, "appel de la fonction"));
-        nasm.ajouteInst(new NasmPop(null,inst.result.accept(this),"valeur de retour"));
-        nasm.ajouteInst(new NasmAdd(null, reg_esp, new NasmConstant(currentFct.getTable().nbVar() * 4), "désallocation des arguments"));
+        nasm.ajouteInst(new NasmSub(label,reg_esp,new NasmConstant(4),"allocation mémoire pour la valeur de retour"));
+        nasm.ajouteInst(new NasmCall(null,inst.op1.accept(this), ""));
+        nasm.ajouteInst(new NasmPop(null,inst.result.accept(this),"récupération de la valeur de retour"));
+        nasm.ajouteInst(new NasmAdd(null, reg_esp, new NasmConstant(inst.op1.val.nbArgs * 4), "désallocation des arguments"));
         return null;
     }
 
@@ -66,9 +65,9 @@ public class C3a2nasm implements C3aVisitor<NasmOperand> {
         NasmRegister reg_esp = new NasmRegister(Nasm.REG_ESP);
         reg_esp.colorRegister(Nasm.REG_ESP);
         NasmLabel label = new NasmLabel(currentFct.getIdentif());
-        nasm.ajouteInst(new NasmPush(label,reg_ebp,"Sauvegarde dans la pile de l’ancienne valeur de ebp"));
-        nasm.ajouteInst(new NasmMov(null,reg_ebp,reg_esp,"Nouvelle valeur de ebp"));
-        nasm.ajouteInst(new NasmSub(null,reg_esp,new NasmConstant(4*currentFct.getTable().nbVar()),"Allocation de mémoire dans la pile pour les variables locales"));
+        nasm.ajouteInst(new NasmPush(label,reg_ebp,"sauvegarde la valeur de ebp"));
+        nasm.ajouteInst(new NasmMov(null,reg_ebp,reg_esp,"nouvelle valeur de ebp"));
+        nasm.ajouteInst(new NasmSub(null,reg_esp,new NasmConstant(4*currentFct.getTable().nbVar()),"allocation des variables locales"));
         return null;
     }
 
@@ -155,9 +154,9 @@ public class C3a2nasm implements C3aVisitor<NasmOperand> {
         reg_esp.colorRegister(Nasm.REG_ESP);
         NasmRegister reg_ebp = new NasmRegister(Nasm.REG_EBP);
         reg_ebp.colorRegister(Nasm.REG_EBP);
-        nasm.ajouteInst(new NasmAdd(label, reg_esp,new NasmConstant(currentFct.getTable().nbVar()*4),"Désallocation de la mémoire occupée par les variables locales"));
-        nasm.ajouteInst(new NasmPop(null,reg_ebp,"Restauration de l’ancienne valeur de ebp (d’avant l’appel)"));
-        nasm.ajouteInst(new NasmRet(null,"return"));
+        nasm.ajouteInst(new NasmAdd(label, reg_esp,new NasmConstant(currentFct.getTable().nbVar()*4),"désallocation des variables locales"));
+        nasm.ajouteInst(new NasmPop(null,reg_ebp,"restaure la valeur de ebp"));
+        nasm.ajouteInst(new NasmRet(null,""));
         return null;
     }
 
@@ -187,7 +186,7 @@ public class C3a2nasm implements C3aVisitor<NasmOperand> {
     @Override
     public NasmOperand visit(C3aInstParam inst) {
         NasmOperand label = (inst.label != null) ? inst.label.accept(this) : null;
-        nasm.ajouteInst(new NasmPush(label,inst.op1.accept(this),"param push"));
+        nasm.ajouteInst(new NasmPush(label,inst.op1.accept(this),"Param"));
         return null;
     }
 
@@ -196,7 +195,7 @@ public class C3a2nasm implements C3aVisitor<NasmOperand> {
         NasmOperand label = (inst.label != null) ? inst.label.accept(this) : null;
         NasmRegister reg_ebp = new NasmRegister(Nasm.REG_EBP);
         reg_ebp.colorRegister(Nasm.REG_EBP);
-        nasm.ajouteInst(new NasmMov(label, new NasmAddress(reg_ebp, '+', new NasmConstant(2)), inst.op1.accept(this),"mov"));
+        nasm.ajouteInst(new NasmMov(label, new NasmAddress(reg_ebp, '+', new NasmConstant(2)), inst.op1.accept(this),"ecriture de la valeur de retour"));
         return null;
     }
 
@@ -205,9 +204,9 @@ public class C3a2nasm implements C3aVisitor<NasmOperand> {
         NasmOperand label = (inst.label != null) ? inst.label.accept(this) : null;
         NasmRegister reg_eax = nasm.newRegister();
         reg_eax.colorRegister(Nasm.REG_EAX);
-        nasm.ajouteInst(new NasmMov(label,reg_eax, inst.op1.accept(this),""));
+        nasm.ajouteInst(new NasmMov(label,reg_eax, inst.op1.accept(this),"Write 1"));
         NasmLabel IprintLF = new NasmLabel("iprintLF");
-        nasm.ajouteInst(new NasmCall(null,IprintLF,"appel de printf"));
+        nasm.ajouteInst(new NasmCall(null,IprintLF,"Write 2"));
         return null;
     }
 
@@ -229,39 +228,20 @@ public class C3a2nasm implements C3aVisitor<NasmOperand> {
     @Override
     public NasmOperand visit(C3aVar oper) {
         //fonction filé
+
         TsItemVar variable = oper.item;
         NasmRegister reg_ebp = new NasmRegister(Nasm.REG_EBP);
         reg_ebp.colorRegister(Nasm.REG_EBP);
-
-        if(variable.portee == tableGlobale){
-            //si c'est globale
-            NasmOperand porte = new NasmLabel(variable.identif);
-            //si c'est pas un tableau
-            if(variable.getTaille() == 1) return new NasmAddress(porte);
+        if (variable.isParam) {
+            return new NasmAddress(reg_ebp, '+', new NasmConstant(2 + variable.portee.nbArg() - variable.adresse));
         }
-
-        char position;
-        if(!(variable.portee == tableGlobale || variable.isParam)){
-        //savoir ou on est par rapport a ebp
-            position = '-';
-        }else position = '+';
-
-        NasmConstant decalage;
-
-        if(variable.getTaille() > 1){
-            //tableau
-            decalage = new NasmConstant(((C3aConstant) oper.index).val);
-        }else{ //param
-            if(variable.isParam) {
-                decalage = new NasmConstant(2 + variable.portee.nbArg() - variable.getAdresse());
-            }
-            //variable locale
-            else {
-                decalage = new NasmConstant(1 + variable.getAdresse());
-            }
+        if (oper.index != null) {
+            return new NasmAddress(new NasmLabel(variable.getIdentif()), '+', oper.index.accept(this));
         }
-
-        return new NasmAddress(reg_ebp,position, decalage );
+        if (currentFct.getTable().variables.containsKey(variable.identif)) {
+            return new NasmAddress(reg_ebp, '-', new NasmConstant(1 + variable.adresse));
+        }
+        return new NasmAddress(new NasmLabel(variable.identif));
     }
 
     @Override

@@ -80,6 +80,14 @@ public class ColorGraph {
     
     public int nbVoisins(int t)
     {
+        Node node = int2Node[t];
+        NodeList neighbours = node.adj();
+        int count = 0;
+        //Parcours les voisins du noeud passé en argument pour les dénombrer
+        for(NodeList q=neighbours; q!=null; q=q.tail) {
+            count++;
+        }
+        return count;
     }
 
     /*-------------------------------------------------------------------------------------------------------------*/

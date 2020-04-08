@@ -10,8 +10,8 @@ public class ColorGraph {
     public  int            R;
     public  int            K;
     private Stack<Integer> pile;
-    public  IntSet         enleves;
-    public  IntSet         deborde;
+    public  IntSet         removed;
+    public  IntSet         spill;
     public  int[]          couleur;
     public  Node[]         int2Node;
     static  int            NOCOLOR = -1;
@@ -48,6 +48,22 @@ public class ColorGraph {
     
     public IntSet couleursVoisins(int t)
     {
+        IntSet neighbourColors = new IntSet(K);
+        Node node = int2Node[t];
+        NodeList neighbours = node.adj();
+        // Parcours les voisins et ajoute dans neighbourColors les couleurs déjà utilisées par les voisins
+        // du noeud dont l'indexe est passé en argument à la fonction
+        for(NodeList q=neighbours; q!=null; q=q.tail) {
+            // Si la couleur est déjà ajoutée au set : continue
+            if(neighbourColors.isMember(couleur[q.head.mykey])){
+                continue;
+            } else{
+                // Aussi non on rajoute la couleur utilisée par le noeud au set de couleur
+                neighbourColors.add(couleur[q.head.mykey]);
+            }
+
+        }
+        return neighbourColors;
     }
     
     /*-------------------------------------------------------------------------------------------------------------*/

@@ -4,6 +4,8 @@ import fg.*;
 import nasm.*;
 import util.graph.*;
 import util.intset.*;
+
+import java.awt.*;
 import java.util.*;
 import java.io.*;
 
@@ -25,6 +27,12 @@ public class Ig {
     }
 
     public void build(){
+		for (Insets sommet :fgs.nasm.listeInst.) {
+			for (Insets r1 :fgs.in.{
+				for (Insets r2 :fgs.in.get(sommet) {
+					if(r1 != r2)
+				}
+		}
     }
 
     public int[] getPrecoloredTemporaries()

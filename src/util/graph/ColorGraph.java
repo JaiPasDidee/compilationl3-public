@@ -2,6 +2,8 @@ package util.graph;
 
 import util.graph.*;
 import util.intset.*;
+
+import java.awt.*;
 import java.util.*;
 import java.io.*;
 
@@ -40,6 +42,12 @@ public class ColorGraph {
     
     public void selection()
     {
+        while(!pile.empty()){
+            int s = pile.pop();
+            IntSet c = couleursVoisins(s);
+            if(c.getSize() != K) couleur[s] = choisisCouleur(//C -c);
+        //couleur[s] = choisisCouleur(couleursVoisins(s)); pour remplacer le if ??
+        }
     }
     
     /*-------------------------------------------------------------------------------------------------------------*/

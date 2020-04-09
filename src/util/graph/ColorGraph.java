@@ -72,8 +72,11 @@ public class ColorGraph {
     
     public int choisisCouleur(IntSet colorSet)
     {
-        //Je suppose que le IntSet passé en argument correspond aux couleurs utilisées par les voisins
-        //du noeud étudié
+        //choisit une couleur dans l’ensemble de couleurs ColorSet
+        int size = colorSet.getSize();
+        Random random = new Random();
+        return random.nextInt(size);
+
     }
     
     /*-------------------------------------------------------------------------------------------------------------*/

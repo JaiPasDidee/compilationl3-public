@@ -42,6 +42,7 @@ public class ColorGraph {
     
     public void selection()
     {
+        //TODO finir la fonction
         while(!pile.empty()){
             int s = pile.pop();
             IntSet c = couleursVoisins(s);

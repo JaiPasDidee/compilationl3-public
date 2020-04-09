@@ -80,7 +80,7 @@ public class ColorGraph {
             //on boucle tant que la couleur n'est pas dans la colorSet
             index = random.nextInt(size);
         }while (!colorSet.isMember(index));
-        return couleur[index];
+        return couleur[index]; //ou return index ?
     }
     
     /*-------------------------------------------------------------------------------------------------------------*/
@@ -108,6 +108,7 @@ public class ColorGraph {
 
     public int simplification()
     {
+
     }
     
     /*-------------------------------------------------------------------------------------------------------------*/
@@ -115,6 +116,14 @@ public class ColorGraph {
     
     public void debordement()
     {
+        spill = new IntSet(R);
+        while (pile.size() != R){
+            int s = //choisis_sommet ?
+            pile.push(s);
+            removed.add(s);
+            spill.add(s);
+            simplification();
+        }
     }
 
 

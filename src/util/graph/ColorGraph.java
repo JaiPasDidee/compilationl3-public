@@ -75,8 +75,12 @@ public class ColorGraph {
         //choisit une couleur dans l’ensemble de couleurs ColorSet
         int size = colorSet.getSize();
         Random random = new Random();
-        return random.nextInt(size);
-
+        int index;
+        do {
+            //on boucle tant que la couleur n'est pas dans la colorSet
+            index = random.nextInt(size);
+        }while (!colorSet.isMember(index));
+        return couleur[index];
     }
     
     /*-------------------------------------------------------------------------------------------------------------*/

@@ -114,9 +114,19 @@ public class ColorGraph {
     /* à la fin du processus, le graphe peut ne pas être vide, il s'agit des temporaires qui ont au moins k voisin */
     /*-------------------------------------------------------------------------------------------------------------*/
 
-    public int simplification()
+    public void simplification()
     {
-
+        boolean modif = true;
+        while (pile.size() != R && modif){
+            modif = false;
+            for (var node: int2Node) {
+                if (nbVoisins(node.mykey) < K && couleur[node.mykey] == NOCOLOR) {
+                   pile.push(node.mykey);
+                   removed.add(node.mykey);
+                   modif = true;
+                }
+            }
+        }
     }
     
     /*-------------------------------------------------------------------------------------------------------------*/

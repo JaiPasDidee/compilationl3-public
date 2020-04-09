@@ -118,12 +118,19 @@ public class ColorGraph {
     {
         spill = new IntSet(R);
         while (pile.size() != R){
-            int s = //choisis_sommet ?
+            int s = choisi_sommet();
             pile.push(s);
             removed.add(s);
             spill.add(s);
             simplification();
         }
+    }
+
+    private int choisi_sommet(){
+        for (int i = 0; i < removed.getSize(); ++i)
+            if (!removed.isMember(i) && couleur[i] == NOCOLOR) return i;
+
+        return -1;
     }
 
 

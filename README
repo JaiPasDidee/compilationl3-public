@@ -16,6 +16,7 @@ TPs
 TP 1 - Analyse syntaxique
   -> Status : finis.
 TP 2 - Construction de l'arbre abstrait
+  Utilisation de la Grammaire réalisée par les professeur par soucis pratique.
   -> Status : finis.
 TP 3,4 - Construction de la table des symboles
   -> Status : finis.
@@ -28,7 +29,9 @@ TP 7 - Production du pré-code assembleur
 TP 8 - Production et résolution du graphe d'analyse
   -> Status : finis.
 TP 9 - Allocation de registres
-  -> Status : pas finis.
+  Il manque deux fonctions getPrecoloredTemporaries() et allocateRegisters() qui ne sont pas implementées.
+  Dans la classe ColorGraph, toutes les fonctions ont été réalisées mais il y a une erreur dans le code qui fait que le test pour la classe ne passe pas.
+  -> Status : incomplet.
   
 
 

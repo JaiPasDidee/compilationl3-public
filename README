@@ -1,2 +1,34 @@
-Tous les Tps jusqu'au début du confinement ont été fait en binôme sur un seul compte github JaiPasDidee. Depuis seule Andréa PIRES continue l'avancement des des tps, avec l'aide de son binôme ci besoin.
-Nous nous sommes arrêtés à la génération du code pré-nasm.
+Contributeurs
+
+DA SILVA Mathieu : TechnoShark
+PIRES Andréa : JaiPasDidee
+
+
+GitHub
+
+Lien : https://github.com/JaiPasDidee/compilationl3-public
+Compte principal : JaiPasDidee
+  Par soucis d'organisation, le travail effectué a été fait en majorité sur un seul compte GitHub.
+  
+  
+TPs
+
+TP 1 - Analyse syntaxique
+  -> Status : finis.
+TP 2 - Construction de l'arbre abstrait
+  -> Status : finis.
+TP 3,4 - Construction de la table des symboles
+  -> Status : finis.
+TP 5,6 - Production du code trois adresses
+  -> Status : finis.
+TP 7 - Production du pré-code assembleur
+  Les fonctions C3aInstRead et C3aVar ont été donné par des personnes de groupe différent.
+  Le evaluate.py n'indique pas que toutes les fonctions sont justes bien qu'elles le sont. Les erreurs viennent des registres r0 et r1 qui sont inversés dû à l'appel du visitor dans la classe Sa2C3a. Cependant, la sorti du code pre-nasm reste logique.
+  -> Status : finis.
+TP 8 - Production et résolution du graphe d'analyse
+  -> Status : finis.
+TP 9 - Allocation de registres
+  -> Status : pas finis.
+  
+
+

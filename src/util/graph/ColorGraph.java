@@ -83,13 +83,11 @@ public class ColorGraph {
     {
         //choisit une couleur dans l’ensemble de couleurs ColorSet
         int size = colorSet.getSize();
-        Random random = new Random();
-        int index;
-        do {
-            //on boucle tant que la couleur n'est pas dans la colorSet
-            index = random.nextInt(size);
-        }while (!colorSet.isMember(index));
-        return couleur[index]; //ou return index ?
+        for (int i = 0; i < size; i++) {
+            if(!colorSet.isMember(i)) return i;
+        }
+        //valeur par default cad NOCOLOR
+        return -1;
     }
     
     /*-------------------------------------------------------------------------------------------------------------*/

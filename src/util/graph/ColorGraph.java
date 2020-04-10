@@ -45,6 +45,8 @@ public class ColorGraph {
         while(!pile.empty()){
             int s = pile.pop();
             IntSet c = couleursVoisins(s);
+            // La boucle permet de déterminer si une couleur n'est pas utilisée par les voisins
+            // et se retrouve donc disponible pour le noeud courant
             for (int index = 0; index < c.getSize(); index++) {
                 if(!c.isMember(index)){
                     couleur[s] = choisisCouleur(c);

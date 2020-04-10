@@ -32,7 +32,7 @@ public class Ig {
         for (NasmInst inst:key) {
             IntSet r = map.get(inst);
             for (int i = 0; i < r.getSize(); i++) {
-                for (int i2 = 0; i2 < r.getSize(); i2++) {
+                for (int i2 = i+1; i2 < r.getSize(); i2++) {
                     if(i != i2){
                         if(r.isMember(i) && r.isMember(i2)) {
                             Node from = int2Node[i];

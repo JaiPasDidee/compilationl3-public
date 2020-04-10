@@ -78,7 +78,7 @@ public class ColorGraph {
     /*-------------------------------------------------------------------------------------------------------------*/
 
     public int choisisCouleur(IntSet colorSet) {
-        //choisit une couleur dans l’ensemble de couleurs ColorSet
+        //choisit la 1ere couleur non utilisé dans l’ensemble de couleurs ColorSet
         int size = colorSet.getSize();
         for (int i = 0; i < size; i++) {
             if (!colorSet.isMember(i)) return i;

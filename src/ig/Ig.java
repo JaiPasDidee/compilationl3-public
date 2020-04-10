@@ -16,59 +16,60 @@ public class Ig {
     public Nasm nasm;
     public Node int2Node[];
 
-    
-    public Ig(FgSolution fgs){
-	this.fgs = fgs;
- 	this.graph = new Graph();
-	this.nasm = fgs.nasm;
-	this.regNb = this.nasm.getTempCounter();
-	this.int2Node = new Node[regNb];
-	build();
+
+    public Ig(FgSolution fgs) {
+        this.fgs = fgs;
+        this.graph = new Graph();
+        this.nasm = fgs.nasm;
+        this.regNb = this.nasm.getTempCounter();
+        this.int2Node = new Node[regNb];
+        build();
     }
 
-    public void build(){
-		for (Insets sommet :fgs.nasm.listeInst.) {
-			for (Insets r1 :fgs.in.{
-				for (Insets r2 :fgs.in.get(sommet) {
-					if(r1 != r2)
-				}
-		}
+    public void build() {
+        for (Insets sommet : fgs.nasm.listeInst.) {
+            for (Insets r1 : fgs.in. {
+                for (Insets r2 : fgs.in.get(sommet) {
+                    if (r1 != r2)
+                }
+            }
+        }
     }
 
-    public int[] getPrecoloredTemporaries()
-    {
+    public int[] getPrecoloredTemporaries() {
+        return new int[3];
+
     }
 
 
-    public void allocateRegisters(){
+    public void allocateRegisters() {
+        int i = 3;
     }
 
 
-    public void affiche(String baseFileName){
-	String fileName;
-	PrintStream out = System.out;
-	
-	if (baseFileName != null){
-	    try {
-		baseFileName = baseFileName;
-		fileName = baseFileName + ".ig";
-		out = new PrintStream(fileName);
-	    }
-	    
-	    catch (IOException e) {
-		System.err.println("Error: " + e.getMessage());
-	    }
-	}
-	
-	for(int i = 0; i < regNb; i++){
-	    Node n = this.int2Node[i];
-	    out.print(n + " : ( ");
-	    for(NodeList q=n.succ(); q!=null; q=q.tail) {
-		out.print(q.head.toString());
-		out.print(" ");
-	    }
-	    out.println(")");
-	}
+    public void affiche(String baseFileName) {
+        String fileName;
+        PrintStream out = System.out;
+
+        if (baseFileName != null) {
+            try {
+                baseFileName = baseFileName;
+                fileName = baseFileName + ".ig";
+                out = new PrintStream(fileName);
+            } catch (IOException e) {
+                System.err.println("Error: " + e.getMessage());
+            }
+        }
+
+        for (int i = 0; i < regNb; i++) {
+            Node n = this.int2Node[i];
+            out.print(n + " : ( ");
+            for (NodeList q = n.succ(); q != null; q = q.tail) {
+                out.print(q.head.toString());
+                out.print(" ");
+            }
+            out.println(")");
+        }
     }
 }
 	    

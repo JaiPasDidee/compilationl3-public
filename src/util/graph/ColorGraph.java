@@ -2,6 +2,8 @@ package util.graph;
 
 import util.graph.*;
 import util.intset.*;
+
+import java.awt.*;
 import java.util.*;
 import java.io.*;
 
@@ -40,6 +42,13 @@ public class ColorGraph {
     
     public void selection()
     {
+        //TODO finir la fonction
+        while(!pile.empty()){
+            int s = pile.pop();
+            IntSet c = couleursVoisins(s);
+            if(c.getSize() != K) couleur[s] = choisisCouleur(//C -c);
+        //couleur[s] = choisisCouleur(couleursVoisins(s)); pour remplacer le if ??
+        }
     }
     
     /*-------------------------------------------------------------------------------------------------------------*/
@@ -72,6 +81,15 @@ public class ColorGraph {
     
     public int choisisCouleur(IntSet colorSet)
     {
+        //choisit une couleur dans l’ensemble de couleurs ColorSet
+        int size = colorSet.getSize();
+        Random random = new Random();
+        int index;
+        do {
+            //on boucle tant que la couleur n'est pas dans la colorSet
+            index = random.nextInt(size);
+        }while (!colorSet.isMember(index));
+        return couleur[index]; //ou return index ?
     }
     
     /*-------------------------------------------------------------------------------------------------------------*/
@@ -97,8 +115,19 @@ public class ColorGraph {
     /* à la fin du processus, le graphe peut ne pas être vide, il s'agit des temporaires qui ont au moins k voisin */
     /*-------------------------------------------------------------------------------------------------------------*/
 
-    public int simplification()
+    public void simplification()
     {
+        boolean modif = true;
+        while (pile.size() != R && modif){
+            modif = false;
+            for (var node: int2Node) {
+                if (nbVoisins(node.mykey) < K && couleur[node.mykey] == NOCOLOR) {
+                   pile.push(node.mykey);
+                   removed.add(node.mykey);
+                   modif = true;
+                }
+            }
+        }
     }
     
     /*-------------------------------------------------------------------------------------------------------------*/
@@ -106,6 +135,21 @@ public class ColorGraph {
     
     public void debordement()
     {
+        spill = new IntSet(R);
+        while (pile.size() != R){
+            int s = choisi_sommet();
+            pile.push(s);
+            removed.add(s);
+            spill.add(s);
+            simplification();
+        }
+    }
+
+    private int choisi_sommet(){
+        for (int i = 0; i < removed.getSize(); ++i)
+            if (!removed.isMember(i) && couleur[i] == NOCOLOR) return i;
+
+        return -1;
     }
 
 

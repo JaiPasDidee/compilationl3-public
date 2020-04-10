@@ -8,6 +8,7 @@ import util.intset.*;
 import java.awt.*;
 import java.util.*;
 import java.io.*;
+import java.util.List;
 
 public class Ig {
     public Graph graph;
@@ -27,10 +28,40 @@ public class Ig {
     }
 
     public void build() {
-        for (Insets sommet : fgs.nasm.listeInst.) {
-            for (Insets r1 : fgs.in. {
-                for (Insets r2 : fgs.in.get(sommet) {
-                    if (r1 != r2)
+        for (NasmInst sommet : fgs.nasm.listeInst) {
+            Map< NasmInst, IntSet> in = fgs.in;
+            Set<NasmInst> key = in.keySet();
+
+            for (NasmInst inst:key) {
+                IntSet r = in.get(inst);
+                for (int i = 0; i < r.getSize(); i++) {
+                    for (int i2 = 0; i2 < r.getSize(); i2++) {
+                        if(i != i2){
+                            if(r.isMember(i) && r.isMember(i2)) {
+                                Node from = int2Node[i];
+                                Node to = int2Node[i2];
+                                graph.addNOEdge(from, to);
+                            }
+                        }
+                    }
+                }
+            }
+
+            Map< NasmInst, IntSet> out = fgs.out;
+            key = out.keySet();
+
+            for (NasmInst inst:key) {
+                IntSet r = out.get(inst);
+                for (int i = 0; i < r.getSize(); i++) {
+                    for (int i2 = 0; i2 < r.getSize(); i2++) {
+                        if(i != i2){
+                            if(r.isMember(i) && r.isMember(i2)) {
+                                Node from = int2Node[i];
+                                Node to = int2Node[i2];
+                                graph.addNOEdge(from, to);
+                            }
+                        }
+                    }
                 }
             }
         }

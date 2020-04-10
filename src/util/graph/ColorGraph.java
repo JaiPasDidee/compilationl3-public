@@ -42,12 +42,16 @@ public class ColorGraph {
     
     public void selection()
     {
-        //TODO finir la fonction
         while(!pile.empty()){
             int s = pile.pop();
             IntSet c = couleursVoisins(s);
-            if(c.getSize() != K) couleur[s] = choisisCouleur(//C -c);
-        //couleur[s] = choisisCouleur(couleursVoisins(s)); pour remplacer le if ??
+            for (int index = 0; index < c.getSize(); index++) {
+                if(!c.isMember(index)){
+                    couleur[s] = choisisCouleur(c);
+                    break;
+                }
+                couleur[s] = NOCOLOR;
+            }
         }
     }
     

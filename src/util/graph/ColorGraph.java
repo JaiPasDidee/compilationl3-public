@@ -39,14 +39,22 @@ public class ColorGraph {
     /*-------------------------------------------------------------------------------------------------------------*/
     /* associe une couleur à tous les sommets se trouvant dans la pile */
     /*-------------------------------------------------------------------------------------------------------------*/
-
-    public void selection() {
-        //TODO finir la fonction
-        while (!pile.empty()) {
+    
+    public void selection()
+    {
+        while(!pile.empty()){
             int s = pile.pop();
             IntSet c = couleursVoisins(s);
-            if (c.getSize() != K) couleur[s] = choisisCouleur(//C -c);
-                    //couleur[s] = choisisCouleur(couleursVoisins(s)); pour remplacer le if ??
+            // La boucle permet de déterminer si une couleur n'est pas utilisée par les voisins
+            // et se retrouve donc disponible pour le noeud courant
+            for (int index = 0; index < c.getSize(); index++) {
+                if(!c.isMember(index)){
+                    couleur[s] = choisisCouleur(c);
+                    break;
+                }
+                couleur[s] = NOCOLOR;
+            }
+
         }
     }
 

@@ -135,7 +135,8 @@ public class ColorGraph {
     /*-------------------------------------------------------------------------------------------------------------*/
 
     public void debordement() {
-        spill = new IntSet(R);
+        //TODO modifier la fonction erreur de debordement index -1
+
         while (pile.size() != R) {
             int s = choisi_sommet();
             pile.push(s);

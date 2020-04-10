@@ -27,39 +27,17 @@ public class Ig {
         build();
     }
 
-    public void build() {
-        for (NasmInst sommet : fgs.nasm.listeInst) {
-            Map< NasmInst, IntSet> in = fgs.in;
-            Set<NasmInst> key = in.keySet();
-
-            for (NasmInst inst:key) {
-                IntSet r = in.get(inst);
-                for (int i = 0; i < r.getSize(); i++) {
-                    for (int i2 = 0; i2 < r.getSize(); i2++) {
-                        if(i != i2){
-                            if(r.isMember(i) && r.isMember(i2)) {
-                                Node from = int2Node[i];
-                                Node to = int2Node[i2];
-                                graph.addNOEdge(from, to);
-                            }
-                        }
-                    }
-                }
-            }
-
-            Map< NasmInst, IntSet> out = fgs.out;
-            key = out.keySet();
-
-            for (NasmInst inst:key) {
-                IntSet r = out.get(inst);
-                for (int i = 0; i < r.getSize(); i++) {
-                    for (int i2 = 0; i2 < r.getSize(); i2++) {
-                        if(i != i2){
-                            if(r.isMember(i) && r.isMember(i2)) {
-                                Node from = int2Node[i];
-                                Node to = int2Node[i2];
-                                graph.addNOEdge(from, to);
-                            }
+    private void addCouple(Map< NasmInst, IntSet> map){
+        Set<NasmInst> key = map.keySet();
+        for (NasmInst inst:key) {
+            IntSet r = map.get(inst);
+            for (int i = 0; i < r.getSize(); i++) {
+                for (int i2 = 0; i2 < r.getSize(); i2++) {
+                    if(i != i2){
+                        if(r.isMember(i) && r.isMember(i2)) {
+                            Node from = int2Node[i];
+                            Node to = int2Node[i2];
+                            graph.addNOEdge(from, to);
                         }
                     }
                 }
@@ -67,14 +45,24 @@ public class Ig {
         }
     }
 
+    public void build() {
+        for (NasmInst sommet : fgs.nasm.listeInst) {
+            addCouple(fgs.in);
+            addCouple(fgs.out);
+        }
+    }
+
     public int[] getPrecoloredTemporaries() {
-        return new int[3];
+        int[] newColor = new int[regNb];
+        return newColor;
 
     }
 
 
     public void allocateRegisters() {
-        int i = 3;
+        for (NasmInst sommet : fgs.nasm.listeInst) {
+
+        }
     }
 
 
